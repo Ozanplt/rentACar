@@ -1,9 +1,11 @@
 package com.etiya.rentACar.api.controllers;
 
-import com.etiya.rentACar.business.abstracts.CarService;
+
 import com.etiya.rentACar.business.abstracts.DamageService;
 import com.etiya.rentACar.business.requests.damageRequests.CreateDamageRequest;
 import com.etiya.rentACar.business.responses.damageResponses.ListDamageDto;
+import com.etiya.rentACar.core.utilities.results.DataResult;
+import com.etiya.rentACar.core.utilities.results.Result;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,35 +15,33 @@ import java.util.List;
 public class DamagesController {
 
     private DamageService damageService;
-    private CarService carService;
-    private CarsController carsController;
 
     public DamagesController(DamageService damageService) {
         this.damageService = damageService;
     }
     @PostMapping("/add")
-    public void add(@RequestBody CreateDamageRequest createDamageRequest){
+    public Result add(@RequestBody CreateDamageRequest createDamageRequest){
 
-        damageService.add(createDamageRequest);
+        return this.damageService.add(createDamageRequest);
     }
 
     @GetMapping("/getall")
-    public List<ListDamageDto> getAll() {
+    public DataResult<List<ListDamageDto>> getAll() {
         return this.damageService.getAll();
     }
 
-    @GetMapping("/get/{id}")
-    public List<ListDamageDto> getByCarId(int id){
+    @GetMapping("/get")
+    public DataResult<List<ListDamageDto>> getByCarId(@RequestParam int id){
         return this.damageService.getByCarId(id);
     }
     @GetMapping("/get/getallpaged")
-    public List<ListDamageDto> getAllPaged(int pageNo,int pageSize) {
+    public DataResult<List<ListDamageDto>> getAllPaged(@RequestParam int pageNo,@RequestParam int pageSize) {
         return this.damageService.getAllPaged(pageNo, pageSize);
 
 
     }
     @GetMapping("/get/getallsorted")
-    public List<ListDamageDto> getAllSorted(String field,String option){
+    public DataResult<List<ListDamageDto>> getAllSorted(@RequestParam String field,@RequestParam String option){
         return this.damageService.getAllSorted(field,option);
 
     }

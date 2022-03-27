@@ -1,18 +1,9 @@
 package com.etiya.rentACar.dataAccess.abstracts;
 
-
-
+import com.etiya.rentACar.entities.Statement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.etiya.rentACar.entities.Brand;
-
-
-
 @Repository
-public interface BrandDao extends JpaRepository<Brand, Integer> {
-
-
-    Boolean existsBrandByNameIgnoreCase(String name);
+public interface StatementDao extends JpaRepository<Statement,Integer> {
 }
-

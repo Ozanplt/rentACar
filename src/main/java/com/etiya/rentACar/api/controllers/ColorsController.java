@@ -3,6 +3,8 @@ package com.etiya.rentACar.api.controllers;
 import com.etiya.rentACar.business.abstracts.ColorService;
 import com.etiya.rentACar.business.requests.colorRequests.CreateColorRequest;
 import com.etiya.rentACar.business.responses.colorResponses.ListColorDto;
+import com.etiya.rentACar.core.utilities.results.DataResult;
+import com.etiya.rentACar.core.utilities.results.Result;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +19,12 @@ public class ColorsController {
     }
 
     @PostMapping("/add")
-    public void add(@RequestBody CreateColorRequest createColorRequest) {
+    public Result add(@RequestBody CreateColorRequest createColorRequest) {
 
-        this.colorService.add(createColorRequest);
+        return this.colorService.add(createColorRequest);
     }
     @GetMapping("/getall")
-    public List<ListColorDto> getAll(){
+    public DataResult<List<ListColorDto>> getAll(){
         return this.colorService.getAll();
     }
 

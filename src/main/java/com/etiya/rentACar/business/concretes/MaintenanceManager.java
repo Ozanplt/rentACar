@@ -1,23 +1,25 @@
 package com.etiya.rentACar.business.concretes;
 
+import com.etiya.rentACar.business.responses.carResponses.CarDto;
+import org.springframework.stereotype.Service;
+import com.etiya.rentACar.business.abstracts.CarService;
 import com.etiya.rentACar.business.abstracts.MaintenanceService;
-import com.etiya.rentACar.business.abstracts.StatementService;
+import com.etiya.rentACar.business.requests.carRequests.UpdateCarRequest;
 import com.etiya.rentACar.business.requests.maintenanceRequests.CreateMaintenanceRequest;
-import com.etiya.rentACar.business.requests.statementRequests.CreateStatementRequest;
+import com.etiya.rentACar.business.requests.maintenanceRequests.DeleteMaintenanceRequest;
+import com.etiya.rentACar.business.requests.maintenanceRequests.UpdateMaintenanceRequest;
 import com.etiya.rentACar.business.responses.maintenanceResponses.ListMaintenanceDto;
-import com.etiya.rentACar.business.responses.statementResponses.ListStatementDto;
 import com.etiya.rentACar.core.crossCuttingConcerns.exceptionHandling.BusinessException;
 import com.etiya.rentACar.core.utilities.dating.DateTodayService;
-
 import com.etiya.rentACar.core.utilities.dating.FormatDateService;
 import com.etiya.rentACar.core.utilities.mapping.ModelMapperService;
-import com.etiya.rentACar.core.utilities.results.*;
 import com.etiya.rentACar.dataAccess.abstracts.MaintenanceDao;
 import com.etiya.rentACar.entities.Maintenance;
-import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.util.Date;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,68 +31,78 @@ public class MaintenanceManager implements MaintenanceService {
     private ModelMapperService modelMapperService;
     private DateTodayService dateTodayService;
     private FormatDateService formatDateService;
-    private StatementService statementService;
+    private CarService carService;
 
-    public MaintenanceManager(MaintenanceDao maintenanceDao, ModelMapperService modelMapperService, DateTodayService dateTodayService, FormatDateService formatDateService, StatementService statementService) {
+    public MaintenanceManager(MaintenanceDao maintenanceDao, ModelMapperService modelMapperService, DateTodayService dateTodayService, FormatDateService formatDateService, CarService carService) {
         this.maintenanceDao = maintenanceDao;
         this.modelMapperService = modelMapperService;
         this.dateTodayService = dateTodayService;
         this.formatDateService = formatDateService;
-        this.statementService = statementService;
+        this.carService = carService;
     }
 
     @Override
-    public Result add(CreateMaintenanceRequest createMaintenanceRequest) throws ParseException {
-        checkCarStatement(createMaintenanceRequest.getDateAdded(), createMaintenanceRequest.getDateReturned(), createMaintenanceRequest.getCarId());
+    public void add(CreateMaintenanceRequest createMaintenanceRequest) {
+        checkCarStatus(createMaintenanceRequest.getReturnDate(), createMaintenanceRequest.getCarId());
         Maintenance maintenance = this.modelMapperService.forRequest().map(createMaintenanceRequest, Maintenance.class);
         this.maintenanceDao.save(maintenance);
-        return new SuccessResult("bakım başarıyla eklendi");
+        carService.updateCarStatus(createMaintenanceRequest.getCarId());
     }
 
     @Override
-    public DataResult<List<ListMaintenanceDto>> getAll() {
+    public void delete(DeleteMaintenanceRequest deleteMaintenanceRequest) {
+        this.maintenanceDao.deleteById(deleteMaintenanceRequest.getId());
+    }
+
+    @Override
+    public void update(UpdateMaintenanceRequest updateMaintenanceRequest) {
+        checkCarStatus(updateMaintenanceRequest.getReturnDate(), updateMaintenanceRequest.getCarId());
+        Maintenance maintenance = this.modelMapperService.forRequest().map(updateMaintenanceRequest, Maintenance.class);
+        this.maintenanceDao.save(maintenance);
+    }
+
+    @Override
+    public List<ListMaintenanceDto> getAll() {
         List<Maintenance> maintenances = this.maintenanceDao.findAll();
         List<ListMaintenanceDto> response = maintenances.stream()
                 .map(maintenance -> this.modelMapperService.forDto().map(maintenance, ListMaintenanceDto.class))
                 .collect(Collectors.toList());
-        return new SuccessDataResult<List<ListMaintenanceDto>>(response,"bakım listesi başarıyla getirildi");
+        return response;
     }
 
     @Override
-    public DataResult<List<ListMaintenanceDto>> getByCarId(int id) {
-        List<Maintenance> maintenances = this.maintenanceDao.findAll();
+    public List<ListMaintenanceDto> getByCarId(int carId) {
+        List<Maintenance> maintenances = this.maintenanceDao.getByCarId(carId);
         List<ListMaintenanceDto> response = maintenances.stream()
                 .map(maintenance -> this.modelMapperService.forDto().map(maintenance, ListMaintenanceDto.class))
-                .filter(listMaintenanceDto -> listMaintenanceDto.getCarId() == id)
                 .collect(Collectors.toList());
-        return new SuccessDataResult<List<ListMaintenanceDto>>(response,"bakım listesi id'ye göre getirildi");
+        return response;
     }
 
     public boolean checkIfCarInMaintenance(int carId) {
-        return maintenanceDao.existsMaintenanceByCarId(carId);
-    }
-
-    public void checkMaintenanceDate(String dateAdded, String dateReturned) throws ParseException {
-        Date dateOfToday = dateTodayService.getTodayTime();
-        Date newDateAdded = formatDateService.getFormattedDate(dateAdded);
-        Date newDateReturned = formatDateService.getFormattedDate(dateReturned);
-
-        if (newDateAdded.before(dateOfToday) && newDateReturned.after(dateOfToday)) {
-            //Araba bakımda değil. Araba uygun
-        }
-        else {
-            throw new RuntimeException("Tarihler Uygun Değil.");
-        }
-    }
-
-    public void checkCarStatement(String dateAdded, String dateReturned, int carId) throws ParseException {
-        if (!checkIfCarInMaintenance(carId)) {
-            checkMaintenanceDate(dateAdded, dateReturned);
+        if (maintenanceDao.existsMaintenanceByCarId(carId)) {
+            throw new BusinessException("Araba zaten bakımda");
         }
         else{
-            throw new BusinessException("Araba Zaten Bakımda.");
+            return false;
         }
     }
 
+    public void checkMaintenanceDate(LocalDate dateReturned){
 
+//        Date dateOfToday = dateTodayService.getTodayTime();
+//      Date newDateAdded = formatDateService.getFormattedDate(dateAdded);
+//        Date newDateReturned = formatDateService.getFormattedDate(dateReturned);
+
+        LocalDateTime dateOfToday = LocalDateTime.now();
+        if (dateReturned.isBefore(ChronoLocalDate.from(dateOfToday))) {
+            throw new BusinessException("Tarihler Uygun Değil.");
+        }
+    }
+
+    public void checkCarStatus(LocalDate dateReturned, int carId){
+        if (!checkIfCarInMaintenance(carId)) {
+            checkMaintenanceDate(dateReturned);
+        }
+    }
 }

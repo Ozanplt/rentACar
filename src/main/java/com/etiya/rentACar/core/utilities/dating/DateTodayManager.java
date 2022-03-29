@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Service
 public class DateTodayManager implements DateTodayService{
-
+    
     public Date getTodayTime() throws ParseException {
         LocalDateTime myDateObj = LocalDateTime.now();
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -20,6 +20,5 @@ public class DateTodayManager implements DateTodayService{
         Date newDate = formatter.parse(formattedDate);
 
         return newDate;
-
     }
 }

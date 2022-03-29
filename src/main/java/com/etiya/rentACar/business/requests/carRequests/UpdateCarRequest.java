@@ -1,4 +1,4 @@
-package com.etiya.rentACar.business.responses.carResponses;
+package com.etiya.rentACar.business.requests.carRequests;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -7,23 +7,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.etiya.rentACar.entities.CarStates;
 
-import java.time.LocalDate;
-
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+public class UpdateCarRequest extends CreateCarRequest{
 
-public class ListCarDto {
-    @JsonIgnore
-    private int id;
+
+    private int carId;
+
     private double dailyPrice;
+
     private String description;
+
     private double modelYear;
-    private String colorName;
-    private String brandName;
+
+    private int colorId;
+
+    private int brandId;
+
     private CarStates carState;
-    @JsonIgnore
-    private LocalDate maintenanceReturnDate;
+
 
 }

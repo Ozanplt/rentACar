@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.etiya.rentACar.entities.CarStates;
 
 @Data
 @AllArgsConstructor
@@ -18,4 +19,6 @@ public class CreateCarRequest {
     private double modelYear;
     private int colorId;
     private int brandId;
+    private CarStates carState;
+
 }

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 
 @Data
 @AllArgsConstructor
@@ -12,7 +14,7 @@ public class ListDamageDto {
 
     private int id;
     private String description;
-    private String date;
+    private LocalDate date;
     private int carId;
     private String carDescription;
 }

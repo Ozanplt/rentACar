@@ -1,11 +1,12 @@
 package com.etiya.rentACar.api.controllers;
 
+import org.springframework.web.bind.annotation.*;
 import com.etiya.rentACar.business.abstracts.CarService;
 import com.etiya.rentACar.business.requests.carRequests.CreateCarRequest;
+import com.etiya.rentACar.business.requests.carRequests.DeleteCarRequest;
+import com.etiya.rentACar.business.requests.carRequests.UpdateCarRequest;
+import com.etiya.rentACar.business.responses.carResponses.CarDto;
 import com.etiya.rentACar.business.responses.carResponses.ListCarDto;
-import com.etiya.rentACar.core.utilities.results.DataResult;
-import com.etiya.rentACar.core.utilities.results.Result;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,29 +19,50 @@ public class CarsController {
         this.carService = carService;
     }
 
-    @PostMapping("/add")
-    public Result add(@RequestBody CreateCarRequest createCarRequest) {
-
-        return this.carService.add(createCarRequest);
-    }
 
     @GetMapping("/getall")
-    public DataResult<List<ListCarDto>> getAll(){
+    public List<ListCarDto> getAll() {
         return this.carService.getAll();
     }
 
     @GetMapping("/getallbymodelyear")
-    public DataResult<List<ListCarDto>> getAllByModelYear(@RequestParam("modelYear") double modelYear){
+    public List<ListCarDto> getAllByModelYear(@RequestParam("modelYear") double modelYear) {
         return this.carService.getAllByModelYear(modelYear);
     }
 
     @GetMapping("/getallpaged")
-    public DataResult<List<ListCarDto>> getAllPaged(int pageNo,int pageSize){
+    public List<ListCarDto> getAllPaged(@RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize) {
         return this.carService.getAllPaged(pageNo, pageSize);
 
     }
+
     @GetMapping("/getallsorted")
-    public DataResult<List<ListCarDto>> getAllSorted(){
+    public List<ListCarDto> getAllSorted() {
         return this.carService.getAllSorted();
     }
+
+    @GetMapping("/getbyid")
+    public CarDto getById(@RequestParam int id) {
+        return this.carService.getById(id);
+    }
+
+    @PostMapping("/add")
+    public void add(@RequestBody CreateCarRequest createCarRequest) {
+        this.carService.add(createCarRequest);
+    }
+
+    @PutMapping("/update")
+    public void update(@RequestBody UpdateCarRequest updateCarRequest) {
+        this.carService.update(updateCarRequest);
+    }
+
+
+    @DeleteMapping("/delete")
+    public void delete(@RequestBody DeleteCarRequest deleteCarRequest) {
+        this.carService.delete(deleteCarRequest);
+    }
+
+
+
+
 }

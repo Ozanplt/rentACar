@@ -1,14 +1,11 @@
 package com.etiya.rentACar.business.concretes;
 
+import org.springframework.stereotype.Service;
+import com.etiya.rentACar.business.abstracts.BrandService;
 import com.etiya.rentACar.business.requests.brandRequests.CreateBrandRequest;
 import com.etiya.rentACar.business.responses.brandResponses.ListBrandDto;
-import com.etiya.rentACar.business.responses.carResponses.ListCarDto;
 import com.etiya.rentACar.core.crossCuttingConcerns.exceptionHandling.BusinessException;
 import com.etiya.rentACar.core.utilities.mapping.ModelMapperService;
-import com.etiya.rentACar.core.utilities.results.*;
-import org.springframework.stereotype.Service;
-
-import com.etiya.rentACar.business.abstracts.BrandService;
 import com.etiya.rentACar.dataAccess.abstracts.BrandDao;
 import com.etiya.rentACar.entities.Brand;
 
@@ -27,21 +24,21 @@ public class BrandManager implements BrandService {
     }
 
     @Override
-    public Result add(CreateBrandRequest createBrandRequest) {
+    public void add(CreateBrandRequest createBrandRequest) {
         checkIfBrandExists(createBrandRequest.getName());
         Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
         this.brandDao.save(brand);
-        return new SuccessResult("marka başarıyla eklendi");
+
     }
 
     @Override
-    public DataResult<List<ListBrandDto>> getAll() {
+    public List<ListBrandDto> getAll() {
         List<Brand> brands = this.brandDao.findAll();
         List<ListBrandDto> response = brands.stream()
                 .map(brand -> this.modelMapperService.forDto()
                         .map(brand, ListBrandDto.class))
                 .collect(Collectors.toList());
-        return new SuccessDataResult<List<ListBrandDto>>(response,"marka listesi başarıyla getirildi");
+        return response;
     }
 
     public void checkIfBrandExists(String brandName){

@@ -31,6 +31,9 @@ public class Car {
     @JoinColumn(name="color_id")
     private Color color;
 
+    @Column(name="carState")
+    private CarStates carState;
+
     @ManyToOne
     @JoinColumn(name="brand_id")
     private Brand brand;
@@ -40,6 +43,5 @@ public class Car {
 
     @OneToMany(mappedBy = "car")
     private List<Maintenance> maintenances;
-
 
 }

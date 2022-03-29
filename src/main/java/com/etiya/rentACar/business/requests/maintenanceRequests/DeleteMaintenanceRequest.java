@@ -1,5 +1,4 @@
-package com.etiya.rentACar.business.responses.statementResponses;
-
+package com.etiya.rentACar.business.requests.maintenanceRequests;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListStatementDto {
-
+public class DeleteMaintenanceRequest {
     private int id;
-    private String name;
-    private int maintenanceId;
 }

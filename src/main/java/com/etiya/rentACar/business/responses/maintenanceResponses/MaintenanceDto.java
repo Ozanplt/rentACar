@@ -6,15 +6,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListMaintenanceDto {
+public class MaintenanceDto {
 
     private int id;
     private LocalDate returnDate;
     private int carId;
     private String carDescription;
-
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class Damage {
     private String description;
 
     @Column(name = "date")
-    private String date;
+    private LocalDate date;
 
     @ManyToOne
     @JoinColumn(name = "car_id")

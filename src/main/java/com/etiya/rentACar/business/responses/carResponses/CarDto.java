@@ -1,6 +1,5 @@
 package com.etiya.rentACar.business.responses.carResponses;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,12 +8,10 @@ import com.etiya.rentACar.entities.CarStates;
 
 import java.time.LocalDate;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class ListCarDto {
+public class CarDto {
     @JsonIgnore
     private int id;
     private double dailyPrice;
@@ -25,5 +22,4 @@ public class ListCarDto {
     private CarStates carState;
     @JsonIgnore
     private LocalDate maintenanceReturnDate;
-
 }

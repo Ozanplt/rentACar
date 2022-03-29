@@ -1,17 +1,14 @@
 package com.etiya.rentACar.business.concretes;
 
 
+import org.springframework.stereotype.Service;
 import com.etiya.rentACar.business.abstracts.ColorService;
 import com.etiya.rentACar.business.requests.colorRequests.CreateColorRequest;
 import com.etiya.rentACar.business.responses.colorResponses.ListColorDto;
-import com.etiya.rentACar.business.responses.damageResponses.ListDamageDto;
 import com.etiya.rentACar.core.crossCuttingConcerns.exceptionHandling.BusinessException;
 import com.etiya.rentACar.core.utilities.mapping.ModelMapperService;
-import com.etiya.rentACar.core.utilities.results.*;
 import com.etiya.rentACar.dataAccess.abstracts.ColorDao;
 import com.etiya.rentACar.entities.Color;
-
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,25 +23,24 @@ public class ColorManager implements ColorService {
         this.modelMapperService = modelMapperService;
     }
     @Override
-    public Result add(CreateColorRequest createColorRequest) {
+    public void add(CreateColorRequest createColorRequest) {
 
         checkIfColorExists(createColorRequest.getName());
 
         Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
         this.colorDao.save(color);
-        return new SuccessResult("Renk başarıyla eklendi");
 
     }
 
     @Override
-    public DataResult<List<ListColorDto>> getAll() {
+    public List<ListColorDto> getAll() {
 
         List<Color> colors = this.colorDao.findAll();
         List<ListColorDto>  response = colors.stream()
                 .map(color->this.modelMapperService.forDto()
                 .map(color, ListColorDto.class))
                 .collect(Collectors.toList());
-        return new SuccessDataResult<List<ListColorDto>>(response,"renk listesi başarıyla getirildi");
+        return response;
     }
     public void checkIfColorExists(String colorName){
         if (colorDao.existsColorByNameIgnoreCase(colorName)) {

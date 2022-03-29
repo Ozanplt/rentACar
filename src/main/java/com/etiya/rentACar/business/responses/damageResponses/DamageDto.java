@@ -1,4 +1,4 @@
-package com.etiya.rentACar.business.responses.maintenanceResponses;
+package com.etiya.rentACar.business.responses.damageResponses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,11 +10,10 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListMaintenanceDto {
-
+public class DamageDto {
     private int id;
-    private LocalDate returnDate;
+    private String description;
+    private LocalDate date;
     private int carId;
     private String carDescription;
-
 }

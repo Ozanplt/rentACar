@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -19,25 +19,17 @@ public class Maintenance {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "date_added")
-    private String dateAdded;
+    @Column(name="description")
+    private String description;
 
-    @Column(name = "date_returned")
-    private String dateReturned;
-
+    @Column(name="returnDate")
+    private LocalDate returnDate;
 
 
     @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;
 
-    @OneToMany(mappedBy = "maintenance")
-    private List<Statement> statements;
-
-
-    @ManyToOne
-    @JoinColumn(name="statement_id")
-    private Statement statement;
 
 
 }

@@ -13,9 +13,5 @@ import lombok.NoArgsConstructor;
 public class CreateBrandRequest {
     @JsonIgnore
     private int id;
-
     private String name;
-
 }
-
-// Bir veritabanında değişiklik yapma işlemi create için ayrı delete için ayrı update için ayrı olmalı

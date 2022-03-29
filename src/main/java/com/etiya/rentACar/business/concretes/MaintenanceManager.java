@@ -10,8 +10,6 @@ import com.etiya.rentACar.business.requests.maintenanceRequests.DeleteMaintenanc
 import com.etiya.rentACar.business.requests.maintenanceRequests.UpdateMaintenanceRequest;
 import com.etiya.rentACar.business.responses.maintenanceResponses.ListMaintenanceDto;
 import com.etiya.rentACar.core.crossCuttingConcerns.exceptionHandling.BusinessException;
-import com.etiya.rentACar.core.utilities.dating.DateTodayService;
-import com.etiya.rentACar.core.utilities.dating.FormatDateService;
 import com.etiya.rentACar.core.utilities.mapping.ModelMapperService;
 import com.etiya.rentACar.dataAccess.abstracts.MaintenanceDao;
 import com.etiya.rentACar.entities.Maintenance;
@@ -29,15 +27,11 @@ public class MaintenanceManager implements MaintenanceService {
 
     private MaintenanceDao maintenanceDao;
     private ModelMapperService modelMapperService;
-    private DateTodayService dateTodayService;
-    private FormatDateService formatDateService;
     private CarService carService;
 
-    public MaintenanceManager(MaintenanceDao maintenanceDao, ModelMapperService modelMapperService, DateTodayService dateTodayService, FormatDateService formatDateService, CarService carService) {
+    public MaintenanceManager(MaintenanceDao maintenanceDao, ModelMapperService modelMapperService, CarService carService) {
         this.maintenanceDao = maintenanceDao;
         this.modelMapperService = modelMapperService;
-        this.dateTodayService = dateTodayService;
-        this.formatDateService = formatDateService;
         this.carService = carService;
     }
 

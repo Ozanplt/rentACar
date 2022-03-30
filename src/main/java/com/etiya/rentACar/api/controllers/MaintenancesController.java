@@ -1,5 +1,7 @@
 package com.etiya.rentACar.api.controllers;
 
+import com.etiya.rentACar.core.utilities.results.DataResult;
+import com.etiya.rentACar.core.utilities.results.Result;
 import org.springframework.web.bind.annotation.*;
 import com.etiya.rentACar.business.abstracts.MaintenanceService;
 import com.etiya.rentACar.business.requests.maintenanceRequests.CreateMaintenanceRequest;
@@ -7,6 +9,7 @@ import com.etiya.rentACar.business.requests.maintenanceRequests.DeleteMaintenanc
 import com.etiya.rentACar.business.requests.maintenanceRequests.UpdateMaintenanceRequest;
 import com.etiya.rentACar.business.responses.maintenanceResponses.ListMaintenanceDto;
 
+import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.List;
 
@@ -24,31 +27,31 @@ public class MaintenancesController {
 
 
     @GetMapping("/getall")
-    public List<ListMaintenanceDto> getAll() {
+    public DataResult<List<ListMaintenanceDto>> getAll() {
 
         return this.maintenanceService.getAll();
     }
 
     @GetMapping("/getbycarid")
-    public List<ListMaintenanceDto> getByCarId(@RequestParam int id) {
+    public DataResult<List<ListMaintenanceDto>> getByCarId(@RequestParam int id) {
         return this.maintenanceService.getByCarId(id);
     }
 
     @PostMapping("/add")
-    public void add(@RequestBody CreateMaintenanceRequest createMaintenanceRequest){
+    public Result add(@RequestBody @Valid CreateMaintenanceRequest createMaintenanceRequest){
 
-        this.maintenanceService.add(createMaintenanceRequest);
+        return this.maintenanceService.add(createMaintenanceRequest);
 
     }
     @PutMapping("/update")
-    public void update(@RequestBody UpdateMaintenanceRequest updateMaintenanceRequest) {
-        this.maintenanceService.update(updateMaintenanceRequest);
+    public Result update(@RequestBody @Valid UpdateMaintenanceRequest updateMaintenanceRequest) {
+        return this.maintenanceService.update(updateMaintenanceRequest);
     }
 
 
     @DeleteMapping("/delete")
-    public void delete(@RequestBody DeleteMaintenanceRequest deleteMaintenanceRequest) {
-        this.maintenanceService.delete(deleteMaintenanceRequest);
+    public Result delete(@RequestBody @Valid DeleteMaintenanceRequest deleteMaintenanceRequest) {
+       return this.maintenanceService.delete(deleteMaintenanceRequest);
     }
 
 

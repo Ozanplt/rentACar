@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CarDto {
-    @JsonIgnore
+
     private int id;
     private double dailyPrice;
     private String description;
@@ -20,6 +20,5 @@ public class CarDto {
     private String colorName;
     private String brandName;
     private CarStates carState;
-    @JsonIgnore
     private LocalDate maintenanceReturnDate;
 }

@@ -1,6 +1,13 @@
 package com.etiya.rentACar.business.concretes;
 
 
+import com.etiya.rentACar.business.constants.messages.BusinessMessages;
+import com.etiya.rentACar.business.requests.colorRequests.DeleteColorRequest;
+import com.etiya.rentACar.business.requests.colorRequests.UpdateColorRequest;
+import com.etiya.rentACar.core.utilities.results.DataResult;
+import com.etiya.rentACar.core.utilities.results.Result;
+import com.etiya.rentACar.core.utilities.results.SuccessDataResult;
+import com.etiya.rentACar.core.utilities.results.SuccessResult;
 import org.springframework.stereotype.Service;
 import com.etiya.rentACar.business.abstracts.ColorService;
 import com.etiya.rentACar.business.requests.colorRequests.CreateColorRequest;
@@ -23,30 +30,43 @@ public class ColorManager implements ColorService {
         this.modelMapperService = modelMapperService;
     }
     @Override
-    public void add(CreateColorRequest createColorRequest) {
+    public Result add(CreateColorRequest createColorRequest) {
 
         checkIfColorExists(createColorRequest.getName());
 
         Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
         this.colorDao.save(color);
+        return new SuccessResult("Color added");
 
+    }
+    @Override
+    public Result update(UpdateColorRequest updateColorRequest) {
+
+        Color color= this.modelMapperService.forRequest().map(updateColorRequest, Color.class);
+        this.colorDao.save(color);
+        return new SuccessResult("Brand updated");
     }
 
     @Override
-    public List<ListColorDto> getAll() {
+    public Result delete(DeleteColorRequest deleteColorRequest) {
+        this.colorDao.deleteById(deleteColorRequest.getId());
+        return new SuccessResult("Brand deleted");
+    }
+
+    @Override
+    public DataResult<List<ListColorDto>> getAll() {
 
         List<Color> colors = this.colorDao.findAll();
         List<ListColorDto>  response = colors.stream()
                 .map(color->this.modelMapperService.forDto()
                 .map(color, ListColorDto.class))
                 .collect(Collectors.toList());
-        return response;
+        return new SuccessDataResult<List<ListColorDto>>(response);
     }
     public void checkIfColorExists(String colorName){
         if (colorDao.existsColorByNameIgnoreCase(colorName)) {
-            throw new BusinessException("Bu renk daha önce kaydedilmiş");
+            throw new BusinessException(BusinessMessages.ColorMessage.COLOR_NAME_EXISTS);
         }
     }
-
 }
 

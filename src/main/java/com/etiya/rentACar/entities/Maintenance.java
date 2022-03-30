@@ -25,6 +25,9 @@ public class Maintenance {
     @Column(name="returnDate")
     private LocalDate returnDate;
 
+    @Column(name="addDate")
+    private LocalDate addDate;
+
 
     @ManyToOne
     @JoinColumn(name = "car_id")

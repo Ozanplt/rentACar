@@ -15,7 +15,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 
 public class ListCarDto {
-    @JsonIgnore
     private int id;
     private double dailyPrice;
     private String description;
@@ -23,7 +22,6 @@ public class ListCarDto {
     private String colorName;
     private String brandName;
     private CarStates carState;
-    @JsonIgnore
     private LocalDate maintenanceReturnDate;
 
 }

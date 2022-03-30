@@ -1,5 +1,11 @@
 package com.etiya.rentACar.business.concretes;
 
+import com.etiya.rentACar.business.constants.messages.BusinessMessages;
+import com.etiya.rentACar.business.requests.carRequests.UpdateCarStatusRequest;
+import com.etiya.rentACar.core.utilities.results.DataResult;
+import com.etiya.rentACar.core.utilities.results.Result;
+import com.etiya.rentACar.core.utilities.results.SuccessDataResult;
+import com.etiya.rentACar.core.utilities.results.SuccessResult;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,33 +39,36 @@ public class CarManager implements CarService {
     }
 
     @Override
-    public void add(CreateCarRequest createCarRequest) {
-        checkDailyPrice(createCarRequest.getDailyPrice());
+    public Result add(CreateCarRequest createCarRequest) {
+//        checkDailyPrice(createCarRequest.getDailyPrice());
         Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
         this.carDao.save(car);
+        return new SuccessResult("Car added");
 
     }
 
     @Override
-    public void update(UpdateCarRequest updateCarRequest) {
+    public Result update(UpdateCarRequest updateCarRequest) {
 
-        Car car = this.modelMapperService.forRequest().map(updateCarRequest,Car.class);
+        Car car = this.modelMapperService.forRequest().map(updateCarRequest, Car.class);
         this.carDao.save(car);
+        return new SuccessResult("Car updated");
     }
 
     @Override
-    public void delete(DeleteCarRequest deleteCarRequest) {
+    public Result delete(DeleteCarRequest deleteCarRequest) {
         this.carDao.deleteById(deleteCarRequest.getId());
+        return new SuccessResult("Car deleted");
     }
 
 
     @Override
-    public List<ListCarDto> getAll() {
+    public DataResult<List<ListCarDto>> getAll() {
 
         List<Car> cars = this.carDao.findAll();
         List<ListCarDto> response = cars.stream().map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class))
                 .collect(Collectors.toList());
-        return response;
+        return new SuccessDataResult<List<ListCarDto>>(response);
     }
 
     @Override
@@ -69,32 +78,47 @@ public class CarManager implements CarService {
         return response;
     }
 
-    public void updateCarStatus(int id) {
+    public DataResult<CarDto> getByCarId(int id) {
+        Car car = this.carDao.getById(id);
+        CarDto response = this.modelMapperService.forDto().map(car, CarDto.class);
+        return new SuccessDataResult<CarDto>(response);
+    }
+
+    public void updateCarStatusToAdd(int id) {
         Car car = this.carDao.getById(id);
         car.setCarState(CarStates.UnderMaintenance);
         this.carDao.save(car);
     }
 
+    public DataResult<CarDto> updateCarStatus(UpdateCarStatusRequest updateCarStatusRequest) {
+        Car car = this.carDao.getById(updateCarStatusRequest.getId());
+        car.setCarState(updateCarStatusRequest.getStatus());
+        this.carDao.save(car);
+        CarDto carDto = this.modelMapperService.forDto().map(car, CarDto.class);
+        return new SuccessDataResult<CarDto>(carDto);
+    }
+
 
     @Override
-    public List<ListCarDto> getAllByModelYear(double modelYear) {
+    public DataResult<List<ListCarDto>> getAllByModelYear(double modelYear) {
         List<Car> cars = this.carDao.getByModelYear(modelYear);
         List<ListCarDto> response = cars.stream().map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
-        return response;
+        return new SuccessDataResult<List<ListCarDto>>(response);
+
     }
 
     @Override
-    public List<ListCarDto> getAllPaged(int pageNo, int pageSize) {
+    public DataResult<List<ListCarDto>> getAllPaged(int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         List<Car> cars = this.carDao.findAll(pageable).getContent();
 
         List<ListCarDto> response = cars.stream().map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
-        return response;
+        return new SuccessDataResult<List<ListCarDto>>(response);
     }
 
     @Override
-    public List<ListCarDto> getAllSorted() {
+    public DataResult<List<ListCarDto>> getAllSorted() {
         Sort sort = Sort.by(Sort.Direction.DESC, "modelYear");
 
         List<Car> cars = this.carDao.findAll(sort);
@@ -102,13 +126,20 @@ public class CarManager implements CarService {
         List<ListCarDto> response = cars.stream()
                 .map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class))
                 .collect(Collectors.toList());
-        return response;
+        return new SuccessDataResult<List<ListCarDto>>(response);
 
     }
 
-    public void checkDailyPrice(double dailyPrice) {
-        if (dailyPrice < 50) {
-            throw new BusinessException("Fiyat 50'den küçük olamaz");
+//    public void checkDailyPrice(double dailyPrice) {
+//        if (dailyPrice < 50) {
+//            throw new BusinessException("Fiyat 50'den küçük olamaz");
+//        }
+//    }
+    public void checkIfCarAvailable(int id) {
+        Car car = carDao.getById(id);
+        if(car.getCarState() != CarStates.Available) {
+            throw new BusinessException(BusinessMessages.CarStateMessage.CAR_NOT_AVAILABLE);
         }
     }
+
 }

@@ -1,5 +1,10 @@
 package com.etiya.rentACar.business.concretes;
 
+import com.etiya.rentACar.business.constants.messages.BusinessMessages;
+import com.etiya.rentACar.core.utilities.results.DataResult;
+import com.etiya.rentACar.core.utilities.results.Result;
+import com.etiya.rentACar.core.utilities.results.SuccessDataResult;
+import com.etiya.rentACar.core.utilities.results.SuccessResult;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,39 +39,42 @@ public class DamageManager implements DamageService {
     }
 
     @Override
-    public void add(CreateDamageRequest createDamageRequest) {
+    public Result add(CreateDamageRequest createDamageRequest) {
 
         Damage damage = this.modelMapperService.forRequest().map(createDamageRequest, Damage.class);
         this.damageDao.save(damage);
+        return new SuccessResult("Damage added");
     }
 
     @Override
-    public void update(UpdateDamageRequest updateDamageRequest) {
+    public Result update(UpdateDamageRequest updateDamageRequest) {
         checkIfCarExists(updateDamageRequest.getCarId());
         Damage damage = this.modelMapperService.forRequest().map(updateDamageRequest, Damage.class);
         this.damageDao.save(damage);
+        return new SuccessResult("Damage updated");
     }
 
     @Override
-    public void delete(DeleteDamageRequest deleteDamageRequest) {
+    public Result delete(DeleteDamageRequest deleteDamageRequest) {
         this.damageDao.deleteById(deleteDamageRequest.getId());
+        return new SuccessResult("Damage deleted");
 
     }
 
     @Override
-    public List<ListDamageDto> getAll() {
+    public DataResult<List<ListDamageDto>> getAll() {
         List<Damage> damages = this.damageDao.findAll();
         List<ListDamageDto> response = damages.stream().map(damage -> this.modelMapperService.forDto().map(damage, ListDamageDto.class)).collect(Collectors.toList());
-        return response;
+        return new SuccessDataResult<List<ListDamageDto>>(response);
     }
 
     @Override
-    public List<ListDamageDto> getAllByCarId(int carId) {
+    public DataResult<List<ListDamageDto>> getAllByCarId(int carId) {
         List<Damage> damages = this.damageDao.getAllByCarId(carId);
         List<ListDamageDto> response = damages.stream()
                 .map(damage -> this.modelMapperService.forDto().map(damage, ListDamageDto.class))
                 .collect(Collectors.toList());
-        return response;
+        return new SuccessDataResult<List<ListDamageDto>>(response);
     }
 
 
@@ -79,29 +87,30 @@ public class DamageManager implements DamageService {
 
     private void checkIfCarExists(int carId) {
         if (this.carService.getById(carId) == null) {
-            throw new BusinessException("Böyle bir araba mevcut değil");
+
+            throw new BusinessException(BusinessMessages.CarDamageMessage.CAR_NOT_EXISTS);
         }
     }
 
     @Override
-    public List<ListDamageDto> getAllPaged(int pageNo, int pageSize) {
+    public DataResult<List<ListDamageDto>> getAllPaged(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         List<Damage> damages = this.damageDao.findAll(pageable).getContent();
         List<ListDamageDto> response = damages.stream()
                 .map(damage -> this.modelMapperService.forDto().map(damage, ListDamageDto.class))
                 .collect(Collectors.toList());
-        return response;
+        return new SuccessDataResult<List<ListDamageDto>>(response);
     }
 
 
     @Override
-    public List<ListDamageDto> getAllSorted(String field, String option) {
+    public DataResult<List<ListDamageDto>> getAllSorted(String field, String option) {
         Sort sortingField = Sort.by(Sort.Direction.valueOf(option), field);
         List<Damage> damages = this.damageDao.findAll(sortingField);
         List<ListDamageDto> response = damages
                 .stream()
                 .map(damage -> this.modelMapperService.forDto().map(damage, ListDamageDto.class))
                 .collect(Collectors.toList());
-        return response;
+        return new SuccessDataResult<List<ListDamageDto>>(response);
     }
 }

@@ -13,6 +13,7 @@ public class MaintenanceDto {
 
     private int id;
     private LocalDate returnDate;
+    private LocalDate addDate;
     private int carId;
     private String carDescription;
 }

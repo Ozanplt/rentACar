@@ -26,4 +26,11 @@ public class CreateRentalRequest {
     @NotNull
     private int customerId;
 
+    @NotNull
+    private String rentCity;
+
+    private String deliveryCity;
+
+    private double lateFee;
+
 }

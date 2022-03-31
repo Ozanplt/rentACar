@@ -39,6 +39,8 @@ public interface CarService {
 
     void checkIfCarAvailable(int id);
 
+    DataResult<List<ListCarDto>> getAllByCity(String city);
+
 
 
 }

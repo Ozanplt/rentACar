@@ -43,6 +43,8 @@ public class UpdateCarRequest extends CreateCarRequest{
     @NotNull
     private CarStates carState;
 
-
+    @NotNull
+    @Length(min=2)
+    private String city;
 
 }

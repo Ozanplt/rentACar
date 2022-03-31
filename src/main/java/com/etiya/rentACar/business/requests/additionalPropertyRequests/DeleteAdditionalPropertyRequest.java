@@ -1,4 +1,4 @@
-package com.etiya.rentACar.business.responses.customerResponses;
+package com.etiya.rentACar.business.requests.additionalPropertyRequests;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,12 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class CustomerDto {
-
-
+public class DeleteAdditionalPropertyRequest {
     private int id;
-    private String firstName;
-    private String lastName;
-
 
 }

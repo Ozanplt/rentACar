@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.etiya.rentACar.business.requests.rentalRequests.DifferentRentDeliveryCityRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -44,5 +45,11 @@ public class RentalsController {
 
         return this.rentalService.update(updateRentalRequest);
     }
+
+//    @PostMapping("/latefee")
+//    public Result lateFee(@RequestBody DifferentRentDeliveryCityRequest differentRentDeliveryCityRequest){
+//
+//        return this.rentalService.lateFee(differentRentDeliveryCityRequest);
+//    }
 
 }

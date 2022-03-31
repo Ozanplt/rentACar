@@ -23,5 +23,10 @@ public class UpdateRentalRequest {
     private int carId;
     @NotNull
     private int customerId;
+    @NotNull
+    private String rentCity;
+
+    private String deliveryCity;
+    private double lateFee;
 
 }

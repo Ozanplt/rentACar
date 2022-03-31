@@ -12,5 +12,5 @@ public class UpdateCustomerRequest {
     private int id;
     private String firstName;
     private String lastName;
-    private String nationalId;
+
 }

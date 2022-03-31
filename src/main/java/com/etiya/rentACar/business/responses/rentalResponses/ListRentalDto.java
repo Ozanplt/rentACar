@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +20,8 @@ public class ListRentalDto {
     private int carId;
     private String firstName;
     private String lastName;
-    private String nationalId;
+    private String rentCity;
+    private String deliveryCity;
+    private double lateFee;
 
 }

@@ -34,9 +34,6 @@ public class Customer {
     @Column(name="lastName")
     private String lastName;
 
-    @Column(name="nationalId")
-    private String nationalId;
-
     @OneToMany(mappedBy="customer")
     private List<Car> cars;
 

@@ -71,6 +71,10 @@ public class CarsController {
         return this.carService.delete(deleteCarRequest);
     }
 
+    @GetMapping("/getallbycity")
+    public DataResult<List<ListCarDto>> getAllByCity(@RequestParam ("city") String city){
+        return this.carService.getAllByCity(city);
+    }
 
 
 

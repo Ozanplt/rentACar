@@ -21,4 +21,5 @@ public class CarDto {
     private String brandName;
     private CarStates carState;
     private LocalDate maintenanceReturnDate;
+    private String city;
 }

@@ -19,6 +19,6 @@ public class ListCustomerDto {
     private int id;
     private String firstName;
     private String lastName;
-    private String nationalId;
+
 
 }

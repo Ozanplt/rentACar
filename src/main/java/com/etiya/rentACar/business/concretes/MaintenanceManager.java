@@ -93,11 +93,7 @@ public class MaintenanceManager implements MaintenanceService {
     }
 
     public void checkMaintenanceDate(LocalDate returnDate, LocalDate addDate){
-
-
-        LocalDateTime dateOfToday = LocalDateTime.now();
-        if (returnDate.isBefore(ChronoLocalDate.from(dateOfToday)) || addDate.isBefore(ChronoLocalDate.from(dateOfToday))
-                || returnDate.isAfter(addDate)) {
+        if (returnDate.isAfter(addDate)) {
             throw new BusinessException(BusinessMessages.MaintenanceMessages.DATE_NOT_AVAILABLE);
         }
     }

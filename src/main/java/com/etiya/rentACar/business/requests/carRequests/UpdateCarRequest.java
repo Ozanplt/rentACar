@@ -47,4 +47,5 @@ public class UpdateCarRequest{
     @Length(min=2)
     private String city;
 
+    private int customerId;
 }

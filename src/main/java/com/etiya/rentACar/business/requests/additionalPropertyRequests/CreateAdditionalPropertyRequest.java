@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 
+
 public class CreateAdditionalPropertyRequest {
     @JsonIgnore
     private int id;

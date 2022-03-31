@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.etiya.rentACar.business.requests.rentalRequests.DifferentRentDeliveryCityRequest;
+import com.etiya.rentACar.business.requests.rentalRequests.UpdateReturnDateRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -44,6 +45,12 @@ public class RentalsController {
     public Result update(@RequestBody @Valid UpdateRentalRequest updateRentalRequest) {
 
         return this.rentalService.update(updateRentalRequest);
+    }
+
+    @PutMapping("/updatereturndate")
+    public Result updateRentalReturnDate(@RequestBody UpdateReturnDateRequest updateReturnDateRequest){
+
+        return this.rentalService.updateRentalReturnDate(updateReturnDateRequest);
     }
 
 //    @PostMapping("/latefee")

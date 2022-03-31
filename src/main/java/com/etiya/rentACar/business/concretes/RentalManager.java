@@ -9,8 +9,7 @@ import com.etiya.rentACar.business.abstracts.AdditionalPropertyService;
 import com.etiya.rentACar.business.constants.messages.BusinessMessages;
 import com.etiya.rentACar.business.requests.additionalPropertyRequests.CreateAdditionalPropertyRequest;
 import com.etiya.rentACar.business.requests.carRequests.UpdateCarStatusRequest;
-import com.etiya.rentACar.business.requests.rentalRequests.DifferentRentDeliveryCityRequest;
-import com.etiya.rentACar.business.requests.rentalRequests.SelectPropertyRequest;
+import com.etiya.rentACar.business.requests.rentalRequests.*;
 import com.etiya.rentACar.business.responses.additionalPropertyResponses.AdditionalPropertyDto;
 import com.etiya.rentACar.business.responses.additionalPropertyResponses.ListAdditionalPropertyDto;
 import com.etiya.rentACar.business.responses.carResponses.CarDto;
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Service;
 
 import com.etiya.rentACar.business.abstracts.CarService;
 import com.etiya.rentACar.business.abstracts.RentalService;
-import com.etiya.rentACar.business.requests.rentalRequests.CreateRentalRequest;
-import com.etiya.rentACar.business.requests.rentalRequests.UpdateRentalRequest;
 import com.etiya.rentACar.business.responses.rentalResponses.ListRentalDto;
 import com.etiya.rentACar.core.utilities.mapping.ModelMapperService;
 import com.etiya.rentACar.core.utilities.results.DataResult;
@@ -53,12 +50,15 @@ public class RentalManager implements RentalService {
 
         carService.checkIfCarAvailable(createRentalRequest.getCarId());
 
-
+        ;
         Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
         rental.setReturnDate(null);
+        rental.setTotalPrice(addTotalPrice(createRentalRequest));
         this.rentalDao.save(rental);
-        addTotalPrice(createRentalRequest);
-        CarDto car = this.carService.getById(createRentalRequest.getCarId());
+
+
+
+        // CarDto car = this.carService.getById(createRentalRequest.getCarId());
         UpdateCarStatusRequest updateCarStatusRequest = new UpdateCarStatusRequest();
         updateCarStatusRequest.setId(createRentalRequest.getCarId());
         updateCarStatusRequest.setStatus(CarStates.Rented);
@@ -76,6 +76,15 @@ public class RentalManager implements RentalService {
         return new SuccessDataResult<List<ListRentalDto>>(response);
     }
 
+    public Result updateRentalReturnDate(UpdateReturnDateRequest updateReturnDateRequest) {
+        UpdateRentalRequest updateRentalRequest = new UpdateRentalRequest();
+
+        Rental rental = this.rentalDao.getByCarId(updateReturnDateRequest.getCarId());
+        rental.setReturnDate(updateReturnDateRequest.getReturnDate());
+        rentalDao.save(rental);
+        return new SuccessResult("Rental Return Date Updated");
+    }
+
     @Override
     public Result update(UpdateRentalRequest updateRentalRequest) {
         CreateRentalRequest createRentalRequest = this.modelMapperService.forRequest().map(updateRentalRequest, CreateRentalRequest.class);
@@ -87,49 +96,43 @@ public class RentalManager implements RentalService {
     }
 
 
-    public void addTotalPrice(CreateRentalRequest createRentalRequest) {
+    public double addTotalPrice(CreateRentalRequest createRentalRequest) {
 
+        if (createRentalRequest.getReturnDate() != null) {
+            CarDto carDto = this.carService.getById(createRentalRequest.getCarId());
 
-        DifferentRentDeliveryCityRequest differentRentDeliveryCityRequest = new DifferentRentDeliveryCityRequest();
-        differentRentDeliveryCityRequest.setRentCity(createRentalRequest.getRentCity());
-        differentRentDeliveryCityRequest.setDeliveryCity(createRentalRequest.getDeliveryCity());
-        differentRentDeliveryCityRequest.setCarId(createRentalRequest.getCarId());
-
-
-        if (checkCity(differentRentDeliveryCityRequest)) {
-            Rental rental = this.rentalDao.getById(differentRentDeliveryCityRequest.getCarId());
-            CarDto carDto = this.carService.getById(differentRentDeliveryCityRequest.getCarId());
-
-            List<ListAdditionalPropertyDto> additionalPropertyDtoList = this.additionalPropertyService.getById(createRentalRequest.getAdditionalPropertyId());
-
-            for (ListAdditionalPropertyDto item : additionalPropertyDtoList) {
-                rental.setTotalPrice(rental.getTotalPrice() + item.getDailyPrice());
-            }
-
-            if (createRentalRequest.getReturnDate() != null) {
-                rental.setTotalPrice(carDto.getDailyPrice() + rental.getTotalPrice());
-                rental.setTotalPrice(diffDates(createRentalRequest) * rental.getTotalPrice() + createRentalRequest.getCityFee());
-            } else {
-                throw new BusinessException(BusinessMessages.RentalMessage.RENTAL);
-            }
+            long dayDiff = diffDates(createRentalRequest);
+            double carTotalPrice = dayDiff * carDto.getDailyPrice();
+            double additionalPropertyTotalPrice = dayDiff * additionalPropertyTotal(createRentalRequest);
+            double cityDiff = checkCity(createRentalRequest);
+            return (carTotalPrice + additionalPropertyTotalPrice + cityDiff);
+        } else {
+            throw new BusinessException(BusinessMessages.RentalMessage.RENTAL);
         }
-
     }
+
 
     public long diffDates(CreateRentalRequest createRentalRequest) {
 
-        long period = ChronoUnit.DAYS.between(createRentalRequest.getReturnDate(), createRentalRequest.getRentDate());
+        long period = ChronoUnit.DAYS.between(createRentalRequest.getRentDate(), createRentalRequest.getReturnDate());
         return period;
 
     }
 
-
-    public boolean checkCity(DifferentRentDeliveryCityRequest differentRentDeliveryCityRequest) {
-        if (differentRentDeliveryCityRequest.getRentCity() != differentRentDeliveryCityRequest.getDeliveryCity()) {
-
-            return true;
+    public double checkCity(CreateRentalRequest createRentalRequest) {
+        if ((createRentalRequest.getRentCity()) == (createRentalRequest.getDeliveryCity())) {
+            return 0;
         } else {
-            return false;
+            return createRentalRequest.getCityFee();
         }
+    }
+
+    public double additionalPropertyTotal(CreateRentalRequest createRentalRequest) {
+        double totalPrice = 0;
+        List<ListAdditionalPropertyDto> additionalPropertyDtoList = this.additionalPropertyService.getById(createRentalRequest.getAdditionalPropertyId());
+        for (ListAdditionalPropertyDto item : additionalPropertyDtoList) {
+            totalPrice += item.getDailyPrice();
+        }
+        return totalPrice;
     }
 }

@@ -35,8 +35,8 @@ public class Rental {
     @Column(name="totalPrice")
     private double totalPrice;
 
-    @Column(name="lateFee")
-    private double lateFee;
+    @Column(name="cityFee")
+    private double cityFee;
 
     @ManyToOne
     @JoinColumn(name="car_id")

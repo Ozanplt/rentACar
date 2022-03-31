@@ -2,10 +2,8 @@ package com.etiya.rentACar.business.abstracts;
 
 import java.util.List;
 
-import com.etiya.rentACar.business.requests.rentalRequests.CreateRentalRequest;
-import com.etiya.rentACar.business.requests.rentalRequests.DifferentRentDeliveryCityRequest;
-import com.etiya.rentACar.business.requests.rentalRequests.UpdateRentalRequest;
-import com.etiya.rentACar.business.requests.rentalRequests.UpdateReturnDateRequest;
+import com.etiya.rentACar.business.requests.brandRequests.DeleteBrandRequest;
+import com.etiya.rentACar.business.requests.rentalRequests.*;
 import com.etiya.rentACar.business.responses.rentalResponses.ListRentalDto;
 import com.etiya.rentACar.core.utilities.results.DataResult;
 import com.etiya.rentACar.core.utilities.results.Result;
@@ -17,4 +15,5 @@ public interface RentalService {
 
     Result updateRentalReturnDate(UpdateReturnDateRequest updateReturnDateRequest);
     Result update(UpdateRentalRequest updateRentalRequest);
+    Result delete(DeleteRentalRequest deleteRentalRequest);
 }

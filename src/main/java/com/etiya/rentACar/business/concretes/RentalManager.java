@@ -50,15 +50,11 @@ public class RentalManager implements RentalService {
 
         carService.checkIfCarAvailable(createRentalRequest.getCarId());
 
-        ;
         Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
         rental.setReturnDate(null);
         rental.setTotalPrice(addTotalPrice(createRentalRequest));
         this.rentalDao.save(rental);
 
-
-
-        // CarDto car = this.carService.getById(createRentalRequest.getCarId());
         UpdateCarStatusRequest updateCarStatusRequest = new UpdateCarStatusRequest();
         updateCarStatusRequest.setId(createRentalRequest.getCarId());
         updateCarStatusRequest.setStatus(CarStates.Rented);
@@ -77,7 +73,6 @@ public class RentalManager implements RentalService {
     }
 
     public Result updateRentalReturnDate(UpdateReturnDateRequest updateReturnDateRequest) {
-        UpdateRentalRequest updateRentalRequest = new UpdateRentalRequest();
 
         Rental rental = this.rentalDao.getByCarId(updateReturnDateRequest.getCarId());
         rental.setReturnDate(updateReturnDateRequest.getReturnDate());
@@ -95,21 +90,23 @@ public class RentalManager implements RentalService {
         return new SuccessResult("RENTAL_CAR_UPDATED");
     }
 
+    @Override
+    public Result delete(DeleteRentalRequest deleteRentalRequest) {
+        this.rentalDao.deleteById(deleteRentalRequest.getId());
+        return new SuccessResult("Rental deleted");
+    }
+
 
     public double addTotalPrice(CreateRentalRequest createRentalRequest) {
 
-        if (createRentalRequest.getReturnDate() != null) {
             CarDto carDto = this.carService.getById(createRentalRequest.getCarId());
-
             long dayDiff = diffDates(createRentalRequest);
             double carTotalPrice = dayDiff * carDto.getDailyPrice();
             double additionalPropertyTotalPrice = dayDiff * additionalPropertyTotal(createRentalRequest);
             double cityDiff = checkCity(createRentalRequest);
             return (carTotalPrice + additionalPropertyTotalPrice + cityDiff);
-        } else {
-            throw new BusinessException(BusinessMessages.RentalMessage.RENTAL);
+
         }
-    }
 
 
     public long diffDates(CreateRentalRequest createRentalRequest) {
@@ -120,11 +117,10 @@ public class RentalManager implements RentalService {
     }
 
     public double checkCity(CreateRentalRequest createRentalRequest) {
-        if ((createRentalRequest.getRentCity()) == (createRentalRequest.getDeliveryCity())) {
-            return 0;
-        } else {
+        if (createRentalRequest.getRentCity() != createRentalRequest.getDeliveryCity() ) {
             return createRentalRequest.getCityFee();
         }
+        return 0;
     }
 
     public double additionalPropertyTotal(CreateRentalRequest createRentalRequest) {

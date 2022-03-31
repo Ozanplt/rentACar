@@ -1,11 +1,13 @@
 package com.etiya.rentACar.entities;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.AllArgsConstructor;
+
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -25,7 +27,10 @@ public class AdditionalProperty {
     @Column(name="dailyPrice")
     private double dailyPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "rental_id")
-    private Rental rental;
+//    @ManyToOne
+//    @JoinColumn(name = "rental_id")
+//    private Rental rental;
+
+    @OneToMany(mappedBy = "additionalProperty")
+    private List<Rental> rentals;
 }

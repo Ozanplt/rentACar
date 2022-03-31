@@ -27,6 +27,6 @@ public class UpdateRentalRequest {
     private String rentCity;
 
     private String deliveryCity;
-    private double lateFee;
+    private double cityFee;
 
 }

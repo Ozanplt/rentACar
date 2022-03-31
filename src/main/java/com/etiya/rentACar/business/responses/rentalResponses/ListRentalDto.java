@@ -22,6 +22,7 @@ public class ListRentalDto {
     private String lastName;
     private String rentCity;
     private String deliveryCity;
-    private double lateFee;
+    private double cityFee;
+    private double totalPrice;
 
 }

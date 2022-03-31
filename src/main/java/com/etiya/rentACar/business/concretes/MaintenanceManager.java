@@ -51,7 +51,7 @@ public class MaintenanceManager implements MaintenanceService {
 
     @Override
     public Result delete(DeleteMaintenanceRequest deleteMaintenanceRequest) {
-        this.maintenanceDao.deleteById(deleteMaintenanceRequest.getId());
+        this.maintenanceDao.deleteById(deleteMaintenanceRequest.getCarId());
         return new SuccessResult("Maintenance deleted");
     }
 
@@ -93,7 +93,7 @@ public class MaintenanceManager implements MaintenanceService {
     }
 
     public void checkMaintenanceDate(LocalDate returnDate, LocalDate addDate){
-        if (returnDate.isAfter(addDate)) {
+        if (returnDate.isBefore(addDate)) {
             throw new BusinessException(BusinessMessages.MaintenanceMessages.DATE_NOT_AVAILABLE);
         }
     }

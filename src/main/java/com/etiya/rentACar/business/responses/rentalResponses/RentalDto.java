@@ -18,5 +18,6 @@ public class RentalDto {
     private int customerId;
     private String rentCity;
     private String deliveryCity;
-    private double lateFee;
+    private double cityFee;
+    private double totalPrice;
 }

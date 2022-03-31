@@ -16,10 +16,10 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCarRequest extends CreateCarRequest{
+public class UpdateCarRequest{
 
     @NotNull
-    private int carId;
+    private int id;
 
     @NotNull
     @Min(1)

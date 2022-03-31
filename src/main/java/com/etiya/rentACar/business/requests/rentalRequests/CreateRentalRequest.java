@@ -31,6 +31,8 @@ public class CreateRentalRequest {
 
     private String deliveryCity;
 
-    private double lateFee;
+    private double cityFee;
+
+    private int additionalPropertyId;
 
 }

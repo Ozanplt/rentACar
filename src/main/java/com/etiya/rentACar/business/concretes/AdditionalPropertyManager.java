@@ -2,10 +2,9 @@ package com.etiya.rentACar.business.concretes;
 
 import com.etiya.rentACar.business.abstracts.AdditionalPropertyService;
 import com.etiya.rentACar.business.requests.additionalPropertyRequests.CreateAdditionalPropertyRequest;
-import com.etiya.rentACar.business.requests.additionalPropertyRequests.SelectPropertyRequest;
+import com.etiya.rentACar.business.requests.rentalRequests.SelectPropertyRequest;
 import com.etiya.rentACar.business.responses.additionalPropertyResponses.AdditionalPropertyDto;
 import com.etiya.rentACar.business.responses.additionalPropertyResponses.ListAdditionalPropertyDto;
-import com.etiya.rentACar.business.responses.carResponses.ListCarDto;
 import com.etiya.rentACar.core.utilities.mapping.ModelMapperService;
 import com.etiya.rentACar.core.utilities.results.DataResult;
 import com.etiya.rentACar.core.utilities.results.Result;
@@ -13,11 +12,12 @@ import com.etiya.rentACar.core.utilities.results.SuccessDataResult;
 import com.etiya.rentACar.core.utilities.results.SuccessResult;
 import com.etiya.rentACar.dataAccess.abstracts.AdditionalPropertyDao;
 import com.etiya.rentACar.entities.AdditionalProperty;
-import com.etiya.rentACar.entities.Car;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class AdditionalPropertyManager implements AdditionalPropertyService {
     private AdditionalPropertyDao additionalPropertyDao;
     private ModelMapperService modelMapperService;
@@ -43,9 +43,21 @@ public class AdditionalPropertyManager implements AdditionalPropertyService {
         return new SuccessResult("Additional property added");
     }
 
-    public AdditionalPropertyDto selectProperty(SelectPropertyRequest selectPropertyRequest){
-        List<AdditionalProperty> additionalProperties = this.additionalPropertyDao.findAll();
+    public List<ListAdditionalPropertyDto> selectProperty(int id){
+     List<AdditionalProperty> additionalProperties = this.additionalPropertyDao.getAllById(id);
 
+//        List<ListAdditionalPropertyDto> response = additionalProperties.stream().map(additionalProperty -> this.modelMapperService.forDto()
+//                        .map(additionalProperties, ListAdditionalPropertyDto.class))
+//                .collect(Collectors.toList());
+//        return response;
+        List<ListAdditionalPropertyDto> response = additionalProperties.stream().map(additionalProperty -> this.modelMapperService.forDto()
+                        .map(additionalProperty, ListAdditionalPropertyDto.class))
+                .collect(Collectors.toList());
+        return response;
     }
 
+    public List<ListAdditionalPropertyDto> getById(int id){
+        List<ListAdditionalPropertyDto> response = selectProperty(id);
+        return response;
+    }
 }

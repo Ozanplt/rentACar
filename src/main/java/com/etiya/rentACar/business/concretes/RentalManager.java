@@ -5,11 +5,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.etiya.rentACar.business.abstracts.AdditionalPropertyService;
 import com.etiya.rentACar.business.constants.messages.BusinessMessages;
+import com.etiya.rentACar.business.requests.additionalPropertyRequests.CreateAdditionalPropertyRequest;
 import com.etiya.rentACar.business.requests.carRequests.UpdateCarStatusRequest;
 import com.etiya.rentACar.business.requests.rentalRequests.DifferentRentDeliveryCityRequest;
+import com.etiya.rentACar.business.requests.rentalRequests.SelectPropertyRequest;
+import com.etiya.rentACar.business.responses.additionalPropertyResponses.AdditionalPropertyDto;
+import com.etiya.rentACar.business.responses.additionalPropertyResponses.ListAdditionalPropertyDto;
 import com.etiya.rentACar.business.responses.carResponses.CarDto;
 import com.etiya.rentACar.core.crossCuttingConcerns.exceptionHandling.BusinessException;
+import com.etiya.rentACar.entities.AdditionalProperty;
 import com.etiya.rentACar.entities.CarStates;
 import org.apache.tomcat.jni.Local;
 import org.hibernate.sql.Update;
@@ -33,11 +39,13 @@ public class RentalManager implements RentalService {
     private RentalDao rentalDao;
     private ModelMapperService modelMapperService;
     private CarService carService;
+    private AdditionalPropertyService additionalPropertyService;
 
-    public RentalManager(RentalDao rentalDao, ModelMapperService modelMapperService, CarService carService) {
+    public RentalManager(RentalDao rentalDao, ModelMapperService modelMapperService, CarService carService, AdditionalPropertyService additionalPropertyService) {
         this.rentalDao = rentalDao;
         this.modelMapperService = modelMapperService;
         this.carService = carService;
+        this.additionalPropertyService = additionalPropertyService;
     }
 
     @Override
@@ -45,12 +53,13 @@ public class RentalManager implements RentalService {
 
         carService.checkIfCarAvailable(createRentalRequest.getCarId());
 
-        addTotalPrice(createRentalRequest);
+
         Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
         rental.setReturnDate(null);
         this.rentalDao.save(rental);
+        addTotalPrice(createRentalRequest);
         CarDto car = this.carService.getById(createRentalRequest.getCarId());
-        UpdateCarStatusRequest updateCarStatusRequest=new UpdateCarStatusRequest();
+        UpdateCarStatusRequest updateCarStatusRequest = new UpdateCarStatusRequest();
         updateCarStatusRequest.setId(createRentalRequest.getCarId());
         updateCarStatusRequest.setStatus(CarStates.Rented);
         carService.updateCarStatus(updateCarStatusRequest);
@@ -69,7 +78,7 @@ public class RentalManager implements RentalService {
 
     @Override
     public Result update(UpdateRentalRequest updateRentalRequest) {
-        CreateRentalRequest createRentalRequest = this.modelMapperService.forRequest().map(updateRentalRequest,CreateRentalRequest.class);
+        CreateRentalRequest createRentalRequest = this.modelMapperService.forRequest().map(updateRentalRequest, CreateRentalRequest.class);
         addTotalPrice(createRentalRequest);
         Rental rental = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
         this.rentalDao.save(rental);
@@ -78,40 +87,48 @@ public class RentalManager implements RentalService {
     }
 
 
+    public void addTotalPrice(CreateRentalRequest createRentalRequest) {
 
-    public void addTotalPrice(CreateRentalRequest createRentalRequest){
 
         DifferentRentDeliveryCityRequest differentRentDeliveryCityRequest = new DifferentRentDeliveryCityRequest();
         differentRentDeliveryCityRequest.setRentCity(createRentalRequest.getRentCity());
         differentRentDeliveryCityRequest.setDeliveryCity(createRentalRequest.getDeliveryCity());
         differentRentDeliveryCityRequest.setCarId(createRentalRequest.getCarId());
-        if(checkCity(differentRentDeliveryCityRequest)) {
+
+
+        if (checkCity(differentRentDeliveryCityRequest)) {
             Rental rental = this.rentalDao.getById(differentRentDeliveryCityRequest.getCarId());
             CarDto carDto = this.carService.getById(differentRentDeliveryCityRequest.getCarId());
-            if (createRentalRequest.getReturnDate() != null) {
-                rental.setTotalPrice(diffDates(createRentalRequest) * carDto.getDailyPrice() + createRentalRequest.getLateFee());
-                rental.setTotalPrice(selectProperty());
+
+            List<ListAdditionalPropertyDto> additionalPropertyDtoList = this.additionalPropertyService.getById(createRentalRequest.getAdditionalPropertyId());
+
+            for (ListAdditionalPropertyDto item : additionalPropertyDtoList) {
+                rental.setTotalPrice(rental.getTotalPrice() + item.getDailyPrice());
             }
-            else{
+
+            if (createRentalRequest.getReturnDate() != null) {
+                rental.setTotalPrice(carDto.getDailyPrice() + rental.getTotalPrice());
+                rental.setTotalPrice(diffDates(createRentalRequest) * rental.getTotalPrice() + createRentalRequest.getCityFee());
+            } else {
                 throw new BusinessException(BusinessMessages.RentalMessage.RENTAL);
             }
         }
 
     }
+
     public long diffDates(CreateRentalRequest createRentalRequest) {
 
-            long period = ChronoUnit.DAYS.between(createRentalRequest.getReturnDate(), createRentalRequest.getRentDate());
-            return period;
+        long period = ChronoUnit.DAYS.between(createRentalRequest.getReturnDate(), createRentalRequest.getRentDate());
+        return period;
 
     }
 
 
-    public boolean checkCity(DifferentRentDeliveryCityRequest differentRentDeliveryCityRequest){
-        if(differentRentDeliveryCityRequest.getRentCity()!=differentRentDeliveryCityRequest.getDeliveryCity()){
+    public boolean checkCity(DifferentRentDeliveryCityRequest differentRentDeliveryCityRequest) {
+        if (differentRentDeliveryCityRequest.getRentCity() != differentRentDeliveryCityRequest.getDeliveryCity()) {
 
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }

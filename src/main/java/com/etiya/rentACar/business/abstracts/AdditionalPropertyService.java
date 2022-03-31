@@ -11,4 +11,6 @@ public interface AdditionalPropertyService {
     DataResult<List<ListAdditionalPropertyDto>> getAll();
 
     Result add(CreateAdditionalPropertyRequest createAdditionalPropertyRequest);
+
+    List<ListAdditionalPropertyDto> getById(int id);
 }

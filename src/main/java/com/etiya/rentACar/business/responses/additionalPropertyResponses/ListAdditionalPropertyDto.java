@@ -14,4 +14,6 @@ public class ListAdditionalPropertyDto {
     private String name;
 
     private double dailyPrice;
+
+
 }

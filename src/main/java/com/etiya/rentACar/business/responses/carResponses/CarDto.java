@@ -1,6 +1,5 @@
 package com.etiya.rentACar.business.responses.carResponses;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,5 +20,6 @@ public class CarDto {
     private String brandName;
     private CarStates carState;
     private LocalDate maintenanceReturnDate;
-    private String city;
+    private String cityName;
+    private double carKilometer;
 }

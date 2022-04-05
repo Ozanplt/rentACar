@@ -1,7 +1,10 @@
 package com.etiya.rentACar.business.concretes;
 
+import com.etiya.rentACar.business.abstracts.CityService;
 import com.etiya.rentACar.business.constants.messages.BusinessMessages;
 import com.etiya.rentACar.business.requests.carRequests.UpdateCarStatusRequest;
+import com.etiya.rentACar.business.requests.rentalRequests.CreateRentalRequest;
+import com.etiya.rentACar.business.responses.cityResponses.ListCityDto;
 import com.etiya.rentACar.core.utilities.results.DataResult;
 import com.etiya.rentACar.core.utilities.results.Result;
 import com.etiya.rentACar.core.utilities.results.SuccessDataResult;
@@ -35,6 +38,7 @@ public class CarManager implements CarService {
     public CarManager(CarDao carDao, ModelMapperService modelMapperService) {
         this.carDao = carDao;
         this.modelMapperService = modelMapperService;
+
 
     }
 
@@ -143,10 +147,23 @@ public class CarManager implements CarService {
     }
 
     @Override
-    public DataResult<List<ListCarDto>> getAllByCity(String city) {
-        List<Car> cars = this.carDao.getAllByCity(city);
-        List<ListCarDto> response = cars.stream().map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
-        return new SuccessDataResult<List<ListCarDto>>(response);
+    public DataResult<List<ListCarDto>> getByCityId(int id) {
+//        ListCityDto cities = this.cityService.getAllByCityId(id);
+        List<Car> cars = this.carDao.getByCityId(id);
+        List<ListCarDto> carResponse = cars.stream().map(item->this.modelMapperService.forDto().map(item,ListCarDto.class)).collect(Collectors.toList());
+        return new SuccessDataResult<List<ListCarDto>>(carResponse);
     }
 
+    @Override
+    public CarDto getCarKilometer(int id) {
+        Car car=this.carDao.getById(id);
+        CarDto carDto=this.modelMapperService.forDto().map(car,CarDto.class);
+        return carDto;
+    }
+
+    @Override
+    public void setCarKilometer(CreateRentalRequest createRentalRequest) {
+        Car car=this.carDao.getById(createRentalRequest.getCarId());
+        car.setCarKilometer(createRentalRequest.getReturnKilometer());
+    }
 }

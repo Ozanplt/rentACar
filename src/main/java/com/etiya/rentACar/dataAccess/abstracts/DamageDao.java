@@ -10,10 +10,6 @@ import java.util.List;
 public interface DamageDao extends JpaRepository <Damage,Integer>{
 
     List<Damage> getAllByCarId(int carId);
-//  List<Damage> getByDate(String date);
-//  List<Damage> getByDateIn(List<String> date);
-//  List<Damage> getByDateContains(String date);
-//  List<Damage> getByCarId(int id);
-//  List<Damage> getByCarIdIn(List<Integer> carId);
+
 
 }

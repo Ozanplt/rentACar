@@ -4,11 +4,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.etiya.rentACar.business.requests.customerRequests.DeleteCustomerRequest;
+import com.etiya.rentACar.business.requests.customerRequests.UpdateCustomerRequest;
+import org.springframework.web.bind.annotation.*;
 
 import com.etiya.rentACar.business.abstracts.CustomerService;
 import com.etiya.rentACar.business.requests.customerRequests.CreateCustomerRequest;
@@ -38,5 +36,14 @@ public class CustomersController {
     @GetMapping("/getall")
     public DataResult<List<ListCustomerDto>> getAll() {
         return customerService.getAll();
+    }
+
+    @PutMapping("/update")
+    public Result update(UpdateCustomerRequest updateCustomerRequest){
+        return this.customerService.update(updateCustomerRequest);
+    }
+    @DeleteMapping("/delete")
+    public Result delete(DeleteCustomerRequest deleteCustomerRequest){
+        return this.customerService.delete(deleteCustomerRequest);
     }
 }

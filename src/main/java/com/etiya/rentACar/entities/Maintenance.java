@@ -28,7 +28,6 @@ public class Maintenance {
     @Column(name="addDate")
     private LocalDate addDate;
 
-
     @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;

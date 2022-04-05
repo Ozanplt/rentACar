@@ -2,9 +2,7 @@ package com.etiya.rentACar.api.controllers;
 
 import com.etiya.rentACar.business.abstracts.AdditionalPropertyService;
 import com.etiya.rentACar.business.requests.additionalPropertyRequests.CreateAdditionalPropertyRequest;
-import com.etiya.rentACar.business.requests.brandRequests.CreateBrandRequest;
 import com.etiya.rentACar.business.responses.additionalPropertyResponses.ListAdditionalPropertyDto;
-import com.etiya.rentACar.business.responses.brandResponses.ListBrandDto;
 import com.etiya.rentACar.core.utilities.results.DataResult;
 import com.etiya.rentACar.core.utilities.results.Result;
 import org.springframework.web.bind.annotation.*;

@@ -3,6 +3,9 @@ package com.etiya.rentACar.business.concretes;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.etiya.rentACar.business.requests.customerRequests.DeleteCustomerRequest;
+import com.etiya.rentACar.business.requests.customerRequests.UpdateCustomerRequest;
+import com.etiya.rentACar.entities.Damage;
 import org.springframework.stereotype.Service;
 
 import com.etiya.rentACar.business.abstracts.CustomerService;
@@ -46,6 +49,19 @@ public class CustomerManager implements CustomerService{
                 .map(car -> this.modelMapperService.forDto().map(car, ListCustomerDto.class)).collect(Collectors.toList());
         return new SuccessDataResult<List<ListCustomerDto>>(response);
 
+    }
+
+    @Override
+    public Result delete(DeleteCustomerRequest deleteCustomerRequest) {
+        this.customerDao.deleteById(deleteCustomerRequest.getId());
+        return new SuccessResult("Customer deleted");
+    }
+
+    @Override
+    public Result update(UpdateCustomerRequest updateCustomerRequest) {
+        Customer customer = this.modelMapperService.forRequest().map(updateCustomerRequest, Customer.class);
+        this.customerDao.save(customer);
+        return new SuccessResult("Customer updated");
     }
 
 }

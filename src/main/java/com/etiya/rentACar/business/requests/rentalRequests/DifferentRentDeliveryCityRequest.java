@@ -1,4 +1,6 @@
+
 package com.etiya.rentACar.business.requests.rentalRequests;
+
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DifferentRentDeliveryCityRequest {
     int id;
-    private String rentCity;
-    private String deliveryCity;
+
+    private int rentCityId;
+    private  int returnCityId;
     private int carId;
 }

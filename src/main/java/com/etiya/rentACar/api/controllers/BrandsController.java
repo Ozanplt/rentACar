@@ -3,11 +3,8 @@ package com.etiya.rentACar.api.controllers;
 
 import com.etiya.rentACar.business.requests.brandRequests.DeleteBrandRequest;
 import com.etiya.rentACar.business.requests.brandRequests.UpdateBrandRequest;
-import com.etiya.rentACar.business.requests.colorRequests.DeleteColorRequest;
-import com.etiya.rentACar.business.requests.colorRequests.UpdateColorRequest;
 import com.etiya.rentACar.core.utilities.results.DataResult;
 import com.etiya.rentACar.core.utilities.results.Result;
-import com.etiya.rentACar.core.utilities.results.SuccessResult;
 import org.springframework.web.bind.annotation.*;
 import com.etiya.rentACar.business.abstracts.BrandService;
 import com.etiya.rentACar.business.requests.brandRequests.CreateBrandRequest;
@@ -23,7 +20,6 @@ public class BrandsController {
     private BrandService brandService;
 
     public BrandsController(BrandService brandService) {
-        super();
         this.brandService = brandService;
     }
 

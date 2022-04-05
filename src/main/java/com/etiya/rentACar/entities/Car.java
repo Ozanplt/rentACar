@@ -44,13 +44,21 @@ public class Car {
     @OneToMany(mappedBy = "car")
     private List<Maintenance> maintenances;
 
-    @Column(name="city")
-    private String city;
+
+    @ManyToOne
+    @JoinColumn(name="city_id")
+    private City city;
 
     @ManyToOne
     @JoinColumn(name="customer_id")
     private Customer customer;
 
+
     @OneToMany(mappedBy = "car")
     private List<Rental> rentals;
+
+    @Column(name="carKilometer")
+    private double carKilometer;
+
+
 }

@@ -72,8 +72,8 @@ public class CarsController {
     }
 
     @GetMapping("/getallbycity")
-    public DataResult<List<ListCarDto>> getAllByCity(@RequestParam ("city") String city){
-        return this.carService.getAllByCity(city);
+    public DataResult<List<ListCarDto>> getByCityId(@RequestParam ("City Id") int cityId){
+        return this.carService.getByCityId(cityId);
     }
 
 

@@ -1,10 +1,13 @@
 package com.etiya.rentACar.business.concretes;
 
 import com.etiya.rentACar.business.abstracts.AdditionalPropertyService;
+import com.etiya.rentACar.business.abstracts.OrderedAdditionalPropertyService;
+import com.etiya.rentACar.business.constants.messages.BusinessMessages;
 import com.etiya.rentACar.business.requests.additionalPropertyRequests.CreateAdditionalPropertyRequest;
-import com.etiya.rentACar.business.requests.rentalRequests.SelectPropertyRequest;
-import com.etiya.rentACar.business.responses.additionalPropertyResponses.AdditionalPropertyDto;
+import com.etiya.rentACar.business.requests.additionalPropertyRequests.DeleteAdditionalPropertyRequest;
+import com.etiya.rentACar.business.requests.additionalPropertyRequests.UpdateAdditionalPropertyRequest;
 import com.etiya.rentACar.business.responses.additionalPropertyResponses.ListAdditionalPropertyDto;
+import com.etiya.rentACar.core.crossCuttingConcerns.exceptionHandling.BusinessException;
 import com.etiya.rentACar.core.utilities.mapping.ModelMapperService;
 import com.etiya.rentACar.core.utilities.results.DataResult;
 import com.etiya.rentACar.core.utilities.results.Result;
@@ -22,6 +25,7 @@ public class AdditionalPropertyManager implements AdditionalPropertyService {
     private AdditionalPropertyDao additionalPropertyDao;
     private ModelMapperService modelMapperService;
 
+
     public AdditionalPropertyManager(AdditionalPropertyDao additionalPropertyDao, ModelMapperService modelMapperService) {
         this.additionalPropertyDao = additionalPropertyDao;
         this.modelMapperService = modelMapperService;
@@ -38,26 +42,34 @@ public class AdditionalPropertyManager implements AdditionalPropertyService {
 
     @Override
     public Result add(CreateAdditionalPropertyRequest createAdditionalPropertyRequest) {
+        checkIfAdditionalPropertyExists(createAdditionalPropertyRequest.getName());
         AdditionalProperty additionalProperty = this.modelMapperService.forRequest().map(createAdditionalPropertyRequest, AdditionalProperty.class);
         this.additionalPropertyDao.save(additionalProperty);
         return new SuccessResult("Additional property added");
     }
 
-    public List<ListAdditionalPropertyDto> selectProperty(int id){
-     List<AdditionalProperty> additionalProperties = this.additionalPropertyDao.getAllById(id);
-
-//        List<ListAdditionalPropertyDto> response = additionalProperties.stream().map(additionalProperty -> this.modelMapperService.forDto()
-//                        .map(additionalProperties, ListAdditionalPropertyDto.class))
-//                .collect(Collectors.toList());
-//        return response;
-        List<ListAdditionalPropertyDto> response = additionalProperties.stream().map(additionalProperty -> this.modelMapperService.forDto()
-                        .map(additionalProperty, ListAdditionalPropertyDto.class))
-                .collect(Collectors.toList());
-        return response;
+    @Override
+    public Result update(UpdateAdditionalPropertyRequest updateAdditionalPropertyRequest) {
+        AdditionalProperty additionalProperty = this.modelMapperService.forRequest().map(updateAdditionalPropertyRequest, AdditionalProperty.class);
+        this.additionalPropertyDao.save(additionalProperty);
+        return new SuccessResult("Additional property updated");
     }
 
-    public List<ListAdditionalPropertyDto> getById(int id){
-        List<ListAdditionalPropertyDto> response = selectProperty(id);
-        return response;
+    @Override
+    public Result delete(DeleteAdditionalPropertyRequest deleteAdditionalPropertyRequest) {
+        this.additionalPropertyDao.deleteById(deleteAdditionalPropertyRequest.getId());
+        return new SuccessResult("Additional property deleted");
+    }
+
+    public ListAdditionalPropertyDto getById(int id){
+        AdditionalProperty response = this.additionalPropertyDao.getById(id);
+        ListAdditionalPropertyDto result = this.modelMapperService.forDto().map(response, ListAdditionalPropertyDto.class);
+        return result;
+    }
+
+    private void checkIfAdditionalPropertyExists(String name) {
+        if (additionalPropertyDao.existsByNameIgnoreCase(name)) {
+            throw new BusinessException(BusinessMessages.AdditionalPropertyMessage.ADDITIONAL_PROPERTY_ALREADY_EXISTS);
+        }
     }
 }

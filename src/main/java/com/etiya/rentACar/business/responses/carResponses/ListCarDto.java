@@ -23,6 +23,7 @@ public class ListCarDto {
     private String brandName;
     private CarStates carState;
     private LocalDate maintenanceReturnDate;
-    private String city;
+    private String cityName;
+    private double carKilometer;
 
 }

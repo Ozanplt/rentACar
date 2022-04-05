@@ -43,9 +43,9 @@ public class UpdateCarRequest{
     @NotNull
     private CarStates carState;
 
-    @NotNull
-    @Length(min=2)
-    private String city;
+    private int cityId;
 
-    private int customerId;
+//    private int customerId;
+
+    private double carKilometer;
 }

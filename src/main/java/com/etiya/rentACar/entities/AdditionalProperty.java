@@ -27,10 +27,8 @@ public class AdditionalProperty {
     @Column(name="dailyPrice")
     private double dailyPrice;
 
-//    @ManyToOne
-//    @JoinColumn(name = "rental_id")
-//    private Rental rental;
-
     @OneToMany(mappedBy = "additionalProperty")
-    private List<Rental> rentals;
+    private List<OrderedAdditionalProperty> orderedAdditionalProperties;
+
+    //ordered additional services classı eklenerek seçilenler orada tutulur
 }

@@ -1,6 +1,5 @@
 package com.etiya.rentACar.api.controllers;
 
-import com.etiya.rentACar.business.requests.carRequests.UpdateCarStatusRequest;
 import com.etiya.rentACar.business.requests.colorRequests.DeleteColorRequest;
 import com.etiya.rentACar.business.requests.colorRequests.UpdateColorRequest;
 import com.etiya.rentACar.core.utilities.results.DataResult;

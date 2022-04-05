@@ -16,4 +16,5 @@ public class UpdateAdditionalPropertyRequest {
     private String name;
 
     private double dailyPrice;
+
 }

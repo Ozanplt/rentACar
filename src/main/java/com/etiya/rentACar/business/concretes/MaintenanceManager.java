@@ -77,15 +77,16 @@ public class MaintenanceManager implements MaintenanceService {
         List<ListMaintenanceDto> response = maintenances.stream()
                 .map(maintenance -> this.modelMapperService.forDto().map(maintenance, ListMaintenanceDto.class))
                 .collect(Collectors.toList());
-        return new SuccessDataResult<List<ListMaintenanceDto>>(response);    }
+        return new SuccessDataResult<List<ListMaintenanceDto>>(response);
+    }
 
     public boolean checkIfCarInMaintenance(int carId) {
         CarDto car = this.carService.getById(carId);
         if (car.getCarState()== CarStates.UnderMaintenance) {
-            throw new BusinessException(BusinessMessages.MaintenanceMessages.CAR_UNDER_MAINTENANCE);
+            throw new BusinessException(BusinessMessages.CarStateMessage.CAR_STATE_UNDER_MAINTENANCE);
         }
         else if(car.getCarState()==CarStates.Rented){
-            throw new BusinessException(BusinessMessages.MaintenanceMessages.CAR_RENTED);
+            throw new BusinessException(BusinessMessages.CarStateMessage.CAR_STATE_RENTED);
         }
         else{
             return false;
@@ -94,7 +95,7 @@ public class MaintenanceManager implements MaintenanceService {
 
     public void checkMaintenanceDate(LocalDate returnDate, LocalDate addDate){
         if (returnDate.isBefore(addDate)) {
-            throw new BusinessException(BusinessMessages.MaintenanceMessages.DATE_NOT_AVAILABLE);
+            throw new BusinessException(BusinessMessages.MaintenanceMessages.MAINTENANCE_DATE_NOT_AVAILABLE);
         }
     }
 

@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface AdditionalPropertyDao extends JpaRepository<AdditionalProperty,Integer> {
 
-    List<AdditionalProperty> getAllById(int id);
+    boolean existsByNameIgnoreCase(String name);
 }

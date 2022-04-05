@@ -9,13 +9,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateRentalRequest {
     @JsonIgnore
     private int id;
-
 
     private LocalDate rentDate;
     private LocalDate returnDate;
@@ -24,9 +24,11 @@ public class UpdateRentalRequest {
     @NotNull
     private int customerId;
     @NotNull
-    private String rentCity;
+    private int rentCityId;
 
-    private String deliveryCity;
+    private int returnCityId;
     private double cityFee;
+    private double startKilometer;
+    private double returnKilometer;;
 
 }

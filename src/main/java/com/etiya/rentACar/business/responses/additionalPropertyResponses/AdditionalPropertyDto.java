@@ -17,4 +17,6 @@ public class AdditionalPropertyDto {
 
     private double dailyPrice;
 
+
+
 }

@@ -24,7 +24,6 @@ import com.etiya.rentACar.entities.Damage;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//managerda o managerın ait olduğu türe ait dao dışında başka bir dao bulunamaz. Sadece başka bir servis injection edilebilir.
 @Service
 public class DamageManager implements DamageService {
 
@@ -88,7 +87,7 @@ public class DamageManager implements DamageService {
     private void checkIfCarExists(int carId) {
         if (this.carService.getById(carId) == null) {
 
-            throw new BusinessException(BusinessMessages.CarDamageMessage.CAR_NOT_EXISTS);
+            throw new BusinessException(BusinessMessages.CarMessage.CAR_NOT_EXISTS);
         }
     }
 

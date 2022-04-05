@@ -41,10 +41,11 @@ public class CreateCarRequest {
     @NotNull
     private CarStates carState;
 
-    @NotNull
-    @Length(min=2)
-    private String city;
 
+    private int cityId;
+
+    @NotNull
+    private double carKilometer;
 
 
 }

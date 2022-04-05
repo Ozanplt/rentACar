@@ -20,9 +20,11 @@ public class ListRentalDto {
     private int carId;
     private String firstName;
     private String lastName;
-    private String rentCity;
-    private String deliveryCity;
+    private int rentCityId;
+    private int returnCityId;
     private double cityFee;
     private double totalPrice;
-
+    private double startKilometer;
+    private double returnKilometer;
+    private int rentalDay;
 }

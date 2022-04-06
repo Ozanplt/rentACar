@@ -17,7 +17,7 @@ public class CreateInvoiceRequest {
     private LocalDate createDate;
 
     private int customerId;
-    @JsonIgnore
+
     private int rentalId;
 
     private LocalDate rentDate;
@@ -28,4 +28,7 @@ public class CreateInvoiceRequest {
     private double totalPricePayment;
 
     private String billNo;
+@JsonIgnore
+    private int rentalDay;
+
 }

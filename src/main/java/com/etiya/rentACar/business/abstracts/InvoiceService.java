@@ -23,5 +23,5 @@ public interface InvoiceService {
     DataResult<List<ListInvoiceDto>> getByCreateDateBetween (LocalDate firstDate, LocalDate endDate);
     DataResult<List<ListInvoiceDto>> getByCustomerId(int id);
     DataResult<InvoiceDto> getById(int id);
-
+    DataResult<InvoiceDto> getByLastInvoice();
 }

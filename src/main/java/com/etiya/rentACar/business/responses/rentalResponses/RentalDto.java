@@ -18,7 +18,6 @@ public class RentalDto {
     private int customerId;
     private int rentCityId;
     private int returnCityId;
-    private double cityFee;
     private double totalPrice;
     private double startKilometer;
     private double returnKilometer;

@@ -26,6 +26,10 @@ public class Invoice {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+
+    @Column(name="billNo")
+    private String billNo;
+
     @ManyToOne
     @JoinColumn(name = "rental_id")
     private Rental rental;
@@ -39,11 +43,11 @@ public class Invoice {
     @Column(name="totalPricePayment")
     private double totalPricePayment;
 
-    @Column(name="billNo")
-    private String billNo;
-
 
     @Column(name = "rentalDay")
     private int rentalDay;
+
+    @OneToMany(mappedBy = "invoice")
+    private List<Payment> payments;
 
 }

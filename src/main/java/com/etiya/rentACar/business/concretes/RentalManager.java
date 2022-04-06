@@ -1,6 +1,7 @@
 package com.etiya.rentACar.business.concretes;
 
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,9 +10,12 @@ import com.etiya.rentACar.business.requests.carRequests.UpdateCarStatusRequest;
 import com.etiya.rentACar.business.requests.rentalRequests.*;
 import com.etiya.rentACar.business.responses.additionalPropertyResponses.ListAdditionalPropertyDto;
 import com.etiya.rentACar.business.responses.carResponses.CarDto;
+import com.etiya.rentACar.business.responses.customerResponses.CustomerDto;
 import com.etiya.rentACar.business.responses.invoiceResponses.InvoiceDto;
 import com.etiya.rentACar.business.responses.orderedAdditionalPropertyResponses.ListOrderedAdditionalPropertyDto;
+import com.etiya.rentACar.business.responses.rentalResponses.RentalDto;
 import com.etiya.rentACar.entities.CarStates;
+import com.etiya.rentACar.entities.Customer;
 import org.springframework.stereotype.Service;
 
 import com.etiya.rentACar.business.responses.rentalResponses.ListRentalDto;
@@ -38,27 +42,27 @@ public class RentalManager implements RentalService {
         this.carService = carService;
         this.additionalPropertyService = additionalPropertyService;
         this.orderedAdditionalPropertyService = orderedAdditionalPropertyService;
-
         this.invoiceService = invoiceService;
     }
 
     @Override
-    public Result add(CreateRentalRequest createRentalRequest, List<Integer> additionalPropertyIdentities) {
+    public Result add(CreateRentalRequest createRentalRequest) {
 
         carService.checkIfCarAvailable(createRentalRequest.getCarId());
 
         Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
-        rental.setReturnDate(null);
-        rental.setTotalPrice(addTotalPrice(createRentalRequest, additionalPropertyIdentities));
+
         this.rentalDao.save(rental);
 
-        updateKilometer(createRentalRequest);
-        lastKilometer(createRentalRequest);
-
-
+//        updateKilometer(createRentalRequest);
+//        lastKilometer(createRentalRequest);
         updateCarStatusAsRented(createRentalRequest);
         return new SuccessResult("RENTAL_CAR_ADDED");
     }
+
+    //return kilometer rental addde null girilmelidir.update'de doğru değer girilebilir.
+    //orderaddtional service ayrıca alınmalı
+
 
     @Override
     public DataResult<List<ListRentalDto>> getAll() {
@@ -79,9 +83,8 @@ public class RentalManager implements RentalService {
     }
 
     @Override
-    public Result update(UpdateRentalRequest updateRentalRequest, List<Integer> additionalPropertyIdentities) {
-        CreateRentalRequest createRentalRequest = this.modelMapperService.forRequest().map(updateRentalRequest, CreateRentalRequest.class);
-        addTotalPrice(createRentalRequest, additionalPropertyIdentities);
+    public Result update(UpdateRentalRequest updateRentalRequest) {
+//        CreateRentalRequest createRentalRequest = this.modelMapperService.forRequest().map(updateRentalRequest, CreateRentalRequest.class);
         Rental rental = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
         this.rentalDao.save(rental);
         return new SuccessResult("RENTAL_CAR_UPDATED");
@@ -93,36 +96,7 @@ public class RentalManager implements RentalService {
         return new SuccessResult("Rental deleted");
     }
 
-    //bütün hesaplama işlemleri payment isteri geldiğinde oraya geçirilecek
-    public double addTotalPrice(CreateRentalRequest createRentalRequest, List<Integer> additionalPropertyIdentities) {
 
-        CarDto carDto = this.carService.getById(createRentalRequest.getCarId());
-        int dayDiff = diffDates(createRentalRequest);
-        double carTotalPrice = dayDiff * carDto.getDailyPrice();
-        double additionalPropertyTotalPrice = dayDiff * additionalPropertyTotal(additionalPropertyIdentities);
-        double cityDiff = checkCity(createRentalRequest);
-        return (carTotalPrice + additionalPropertyTotalPrice + cityDiff);
-
-    }
-//    public void checkKilometer(CreateRentalRequest createRentalRequest){
-//        CarDto carDto = this.carService.getCarKilometer(createRentalRequest.getCarId());
-//        if(createRentalRequest.getReturnKilometer()< carDto.getCarKilometer()){
-//            throw new BusinessException("Return, renttten küçük olamaz");
-//        }
-//    }
-
-
-    public int diffDates(CreateRentalRequest createRentalRequest) {
-        long period = ChronoUnit.DAYS.between(createRentalRequest.getRentDate(), createRentalRequest.getReturnDate());;
-        return (int) period;
-    }
-
-    public double checkCity(CreateRentalRequest createRentalRequest) {
-        if (createRentalRequest.getRentCityId() != createRentalRequest.getReturnCityId()) {
-            return createRentalRequest.getCityFee();
-        }
-        return 0;
-    }
 
     public void updateCarStatusAsRented(CreateRentalRequest createRentalRequest) {
         UpdateCarStatusRequest updateCarStatusRequest = new UpdateCarStatusRequest();
@@ -132,19 +106,14 @@ public class RentalManager implements RentalService {
 
     }
 
-    public double additionalPropertyTotal(List<Integer> orderedAdditionalPropertyIdentities) {
-        double totalPrice = 0;
-        for (int orderedAdditionalItem : orderedAdditionalPropertyIdentities) {
 
-            List<ListOrderedAdditionalPropertyDto> result2 = this.orderedAdditionalPropertyService.getAllIdById(orderedAdditionalItem);
-
-            for (int additionalItem : result2.stream().map(item -> item.getAdditionalPropertyId()).collect(Collectors.toList())) {
-                ListAdditionalPropertyDto response = this.additionalPropertyService.getById(additionalItem);
-                totalPrice += response.getDailyPrice();
-            }
-        }
-        return totalPrice;
+    public DataResult<RentalDto> getById(int id){
+        Rental rental = this.rentalDao.getById(id);
+        RentalDto rentalDto = this.modelMapperService.forDto().map(rental,RentalDto.class);
+        return new SuccessDataResult<RentalDto>(rentalDto);
     }
+//indirimli metod
+
 
     public void updateKilometer(CreateRentalRequest createRentalRequest) {
         CarDto carDto = this.carService.getCarKilometer(createRentalRequest.getCarId());
@@ -156,5 +125,13 @@ public class RentalManager implements RentalService {
     public Result lastKilometer(CreateRentalRequest createRentalRequest) {
         this.carService.setCarKilometer(createRentalRequest);
         return new SuccessResult("Arabanın kilometresi güncellendi");
+    }
+
+    @Override
+    public DataResult<RentalDto> getByLastRental() {
+        List<Rental> rentals = this.rentalDao.findAll();
+        Rental rental = rentals.get(rentals.size() - 1);
+        RentalDto rentalDto = this.modelMapperService.forDto().map(rental, RentalDto.class);
+        return new SuccessDataResult<RentalDto>(rentalDto);
     }
 }

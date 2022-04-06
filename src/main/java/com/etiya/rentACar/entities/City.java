@@ -39,4 +39,11 @@ public class City {
     @OneToMany(mappedBy = "city")
     private List<Car> cars;
 
+    @OneToMany(mappedBy = "returnCity")
+    private List<Payment> returnPayments;
+
+    @OneToMany(mappedBy = "rentCity")
+    private List<Payment> rentPayments;
+
+
 }

@@ -30,5 +30,4 @@ public class AdditionalProperty {
     @OneToMany(mappedBy = "additionalProperty")
     private List<OrderedAdditionalProperty> orderedAdditionalProperties;
 
-    //ordered additional services classı eklenerek seçilenler orada tutulur
 }

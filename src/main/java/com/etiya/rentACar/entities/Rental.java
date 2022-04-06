@@ -27,15 +27,6 @@ public class Rental {
     private LocalDate returnDate;
 
 
-    @Column(name="totalPrice")
-    private double totalPrice;
-
-    @Column(name="cityFee")
-    private double cityFee;
-
-    @ManyToOne
-    @JoinColumn(name="car_id")
-    private Car car;
 
     @ManyToOne
     @JoinColumn(name="customer_id")
@@ -51,17 +42,27 @@ public class Rental {
     private City rentCity;
 
 
+    @OneToMany(mappedBy="rental")
+    private List<Invoice> invoices;
+
+    @OneToMany(mappedBy="rental")
+    private List<Payment> payments;
+
+
+    @Column(name="totalPrice")
+    private double totalPrice;
+
+    @ManyToOne
+    @JoinColumn(name="car_id")
+    private Car car;
+
     @Column(name="startKilometer")
     private double startKilometer;
+
 
     @Column(name="returnKilometer")
     private double returnKilometer;
 
-    @OneToMany(mappedBy = "rental")
-    private List<OrderedAdditionalProperty> orderedAdditionalProperties;
-
-    @OneToMany(mappedBy="rental")
-    private List<Invoice> invoices;
 
 
 }

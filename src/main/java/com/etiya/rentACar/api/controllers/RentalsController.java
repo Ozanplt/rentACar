@@ -24,8 +24,8 @@ public class RentalsController {
     }
 
     @PostMapping("/add")
-    public Result add(@RequestBody @Valid CreateRentalRequest createRentalRequest,@RequestParam ("orderedAdditionalPropertyIdentities") List<Integer> orderedAdditionalPropertyIdentities) {
-        return this.rentalService.add(createRentalRequest,orderedAdditionalPropertyIdentities);
+    public Result add(@RequestBody @Valid CreateRentalRequest createRentalRequest) {
+        return this.rentalService.add(createRentalRequest);
     }
 
     @GetMapping("/getall")
@@ -34,9 +34,9 @@ public class RentalsController {
     }
 
     @PutMapping("/update")
-    public Result update(@RequestBody @Valid UpdateRentalRequest updateRentalRequest, List<Integer> additionalPropertyIdentities) {
+    public Result update(@RequestBody @Valid UpdateRentalRequest updateRentalRequest) {
 
-        return this.rentalService.update(updateRentalRequest,additionalPropertyIdentities);
+        return this.rentalService.update(updateRentalRequest);
     }
 
     @PutMapping("/updatereturndate")

@@ -27,4 +27,7 @@ public class InvoiceDto {
     private String customerFirstName;
 
     private String customerLastName;
+
+    private int rentalDay;
+
 }

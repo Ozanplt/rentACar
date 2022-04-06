@@ -27,5 +27,6 @@ public class ListInvoiceDto {
     private String customerFirstName;
 
     private String customerLastName;
+    private int rentalDay;
 
 }

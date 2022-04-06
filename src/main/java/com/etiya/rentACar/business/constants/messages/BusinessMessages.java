@@ -95,4 +95,13 @@ public class BusinessMessages {
         public static final String INVOICE_DELETED="FATURA SİLİNDİ";
 
     }
+
+    public class PaymentMessage {
+        public static final String PAYMENT = " !";
+        public static final String PAYMENT_ADDED="ÖDEME EKLENDİ";
+        public static final String PAYMENT_UPDATED="ÖDEME GÜNCELLENDİ";
+        public static final String PAYMENT_DELETED="ÖDEME SİLİNDİ";
+        public static final String PAYMENT_NOT_ACCEPTED ="ÖDEME KABUL EDİLMEDİ";
+
+    }
 }

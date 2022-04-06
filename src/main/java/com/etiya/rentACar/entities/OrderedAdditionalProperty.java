@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="orderedadditionalproperties")
+@Table(name = "orderedadditionalproperties")
 public class OrderedAdditionalProperty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,10 +19,15 @@ public class OrderedAdditionalProperty {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name="rental_id")
+    @JoinColumn(name = "rental_id")
     private Rental rental;
 
     @ManyToOne
-    @JoinColumn(name="additionalProperty_id")
+    @JoinColumn(name = "additionalProperty_id")
     private AdditionalProperty additionalProperty;
+
+    @OneToMany(mappedBy = "orderedAdditionalProperty")
+    private List<Payment> payments;
+
+
 }

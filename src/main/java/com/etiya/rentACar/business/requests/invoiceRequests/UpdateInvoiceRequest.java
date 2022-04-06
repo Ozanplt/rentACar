@@ -25,4 +25,7 @@ public class UpdateInvoiceRequest {
     private double totalPricePayment;
 
     private String billNo;
+    @JsonIgnore
+    private int rentalDay;
+
 }

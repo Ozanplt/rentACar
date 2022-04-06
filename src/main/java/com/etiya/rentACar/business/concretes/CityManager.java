@@ -3,6 +3,7 @@ package com.etiya.rentACar.business.concretes;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.etiya.rentACar.business.responses.cityResponses.CityDto;
 import org.springframework.stereotype.Service;
 
 import com.etiya.rentACar.business.abstracts.CityService;
@@ -19,6 +20,8 @@ import com.etiya.rentACar.core.utilities.results.SuccessDataResult;
 import com.etiya.rentACar.core.utilities.results.SuccessResult;
 import com.etiya.rentACar.dataAccess.abstracts.CityDao;
 import com.etiya.rentACar.entities.City;
+
+import javax.xml.crypto.Data;
 
 @Service
 public class CityManager implements CityService {
@@ -68,9 +71,9 @@ public class CityManager implements CityService {
             throw new BusinessException(BusinessMessages.CityMessage.CITY_ALREADY_EXISTS);
         }
     }
-//    public ListCityDto getAllByCityId(int cityId){
-//        City cities = this.cityDao.getAllByCityName(cityId);
-//       ListCityDto response = this.modelMapperService.forDto().map(cities,ListCityDto.class);
-//        return response;
-//    }
+    public DataResult<CityDto> getById(int id){
+        City cities = this.cityDao.getById(id);
+       CityDto response = this.modelMapperService.forDto().map(cities,CityDto.class);
+        return new SuccessDataResult<CityDto>(response);
+    }
 }

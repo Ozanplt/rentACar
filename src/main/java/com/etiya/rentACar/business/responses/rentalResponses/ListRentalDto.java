@@ -22,7 +22,6 @@ public class ListRentalDto {
     private String lastName;
     private int rentCityId;
     private int returnCityId;
-    private double cityFee;
     private double totalPrice;
     private double startKilometer;
     private double returnKilometer;

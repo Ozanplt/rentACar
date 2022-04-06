@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,9 +34,8 @@ public class CreateRentalRequest {
 
     private int returnCityId;
 
-    private double cityFee;
-
-    //private int additionalPropertyId;
+    @JsonIgnore
+    private double totalPrice;
 
     @JsonIgnore
     private double startKilometer;

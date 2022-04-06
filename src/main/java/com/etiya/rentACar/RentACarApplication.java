@@ -2,6 +2,8 @@ package com.etiya.rentACar;
 
 import com.etiya.rentACar.core.crossCuttingConcerns.exceptionHandling.BusinessException;
 import com.etiya.rentACar.core.utilities.results.ErrorDataResult;
+import com.etiya.rentACar.payService.HalkBankPosManager;
+import com.etiya.rentACar.payService.IsBankPosManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -49,4 +51,14 @@ public class RentACarApplication {
 	}
 
 	//genel olarak exception yaz
+
+	@Bean
+	public IsBankPosManager getIsbankPostManager(){
+		return new IsBankPosManager();
+	}
+
+	@Bean
+	public HalkBankPosManager getHalkBankPosManager(){
+		return new HalkBankPosManager();
+	}
 }

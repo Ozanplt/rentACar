@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.etiya.rentACar.business.requests.customerRequests.DeleteCustomerRequest;
 import com.etiya.rentACar.business.requests.customerRequests.UpdateCustomerRequest;
+import com.etiya.rentACar.business.responses.customerResponses.CustomerDto;
 import com.etiya.rentACar.entities.Damage;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,9 @@ import com.etiya.rentACar.dataAccess.abstracts.CustomerDao;
 import com.etiya.rentACar.entities.Brand;
 import com.etiya.rentACar.entities.Car;
 import com.etiya.rentACar.entities.Customer;
+
 @Service
-public class CustomerManager implements CustomerService{
+public class CustomerManager implements CustomerService {
 
     private CustomerDao customerDao;
     private ModelMapperService modelMapperService;
@@ -64,4 +66,12 @@ public class CustomerManager implements CustomerService{
         return new SuccessResult("Customer updated");
     }
 
+    @Override
+    public DataResult<CustomerDto> getByLastCustomer() {
+        List<Customer> customers = this.customerDao.findAll();
+        Customer customer = customers.get(customers.size() - 1);
+        CustomerDto customerDto = this.modelMapperService.forDto().map(customer, CustomerDto.class);
+        return new SuccessDataResult<CustomerDto>(customerDto);
+    }
 }
+

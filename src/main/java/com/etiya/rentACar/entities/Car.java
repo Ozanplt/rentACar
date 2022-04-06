@@ -60,5 +60,7 @@ public class Car {
     @Column(name="carKilometer")
     private double carKilometer;
 
+    @OneToMany(mappedBy = "car")
+    private List<Payment> payments;
 
 }

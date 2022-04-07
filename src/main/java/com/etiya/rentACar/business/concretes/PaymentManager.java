@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PaymentManager implements CityService.PaymentService {
+public class PaymentManager implements PaymentService {
 
     private PaymentDao paymentDao;
     private ModelMapperService modelMapperService;

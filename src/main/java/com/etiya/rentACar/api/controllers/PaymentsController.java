@@ -1,6 +1,8 @@
 package com.etiya.rentACar.api.controllers;
 
-import com.etiya.rentACar.business.abstracts.CityService;
+
+
+import com.etiya.rentACar.business.abstracts.PaymentService;
 import com.etiya.rentACar.business.requests.paymentRequests.CreatePaymentRequest;
 import com.etiya.rentACar.business.responses.paymentResponses.ListPaymentDto;
 import com.etiya.rentACar.core.utilities.results.DataResult;
@@ -12,9 +14,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/payments")
 public class PaymentsController {
-    private CityService.PaymentService paymentService;
+    private PaymentService paymentService;
 
-    public PaymentsController(CityService.PaymentService paymentService) {
+    public PaymentsController(PaymentService paymentService) {
         this.paymentService = paymentService;
     }
 

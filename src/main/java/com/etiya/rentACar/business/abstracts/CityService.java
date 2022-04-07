@@ -19,9 +19,5 @@ public interface CityService {
     Result delete(DeleteCityRequest deleteCityRequest);
     DataResult<CityDto> getById(int id);
 
-    interface PaymentService {
-        Result add(CreatePaymentRequest createPaymentRequest);
-        DataResult<List<ListPaymentDto>> getALl();
 
-    }
 }

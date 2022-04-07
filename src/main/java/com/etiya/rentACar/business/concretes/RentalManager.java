@@ -134,4 +134,13 @@ public class RentalManager implements RentalService {
         RentalDto rentalDto = this.modelMapperService.forDto().map(rental, RentalDto.class);
         return new SuccessDataResult<RentalDto>(rentalDto);
     }
+
+    //for dailydiscountedprice
+    public double setDiscountedPrice(int carId){
+        double discountRate = 1;
+        Rental rental = this.rentalDao.getById(carId);
+        CarDto carDto = this.carService.getById(carId);
+        rental.setTotalPrice(carDto.getDailyPrice()*discountRate);
+        return carDto.getDailyPrice()*discountRate;
+    }
 }

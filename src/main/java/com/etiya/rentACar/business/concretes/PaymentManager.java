@@ -59,14 +59,20 @@ public class PaymentManager implements CityService.PaymentService {
     @Override
     public Result add(CreatePaymentRequest createPaymentRequest) {
         this.makePayment(createPaymentRequest);
+
         Payment payment = this.modelMapperService.forRequest().map(createPaymentRequest, Payment.class);
+
         this.newCustomerForPayment(createPaymentRequest);
         Customer customer = this.modelMapperService.forDto().map(this.customerService.getByLastCustomer().getData(), Customer.class);
+
         this.newRentalForPayment(createPaymentRequest);
         Rental rental = this.modelMapperService.forDto().map(this.rentalService.getByLastRental().getData(), Rental.class);
+
         this.newInvoiceForPayment(createPaymentRequest, rental, customer);
         Invoice invoice = this.modelMapperService.forRequest().map(this.invoiceService.getByLastInvoice().getData(), Invoice.class);
+
         this.newOrderedAdditionalProperty(createPaymentRequest,rental);
+
         this.newPayment(createPaymentRequest,payment,customer,rental,invoice);
 
         return new SuccessResult(BusinessMessages.PaymentMessage.PAYMENT_ADDED);
@@ -132,12 +138,13 @@ public class PaymentManager implements CityService.PaymentService {
         createRentalRequest.setStartKilometer(updateKilometer(createPaymentRequest.getCarId()));
         createRentalRequest.setRentCityId(createPaymentRequest.getRentCityId());
         createRentalRequest.setReturnCityId(createPaymentRequest.getReturnCityId());
+        createRentalRequest.setTotalPrice(this.rentalService.setDiscountedPrice(createPaymentRequest.getCarId()));
         this.rentalService.add(createRentalRequest);
     }
 
     public void newInvoiceForPayment(CreatePaymentRequest createPaymentRequest, Rental rental, Customer customer) {
         CreateInvoiceRequest createInvoiceRequest = new CreateInvoiceRequest();
-        createInvoiceRequest.setBillNo("1234OzanEmineCem");
+        createInvoiceRequest.setBillNo("123456ABC"); //random metodu ile
         createInvoiceRequest.setRentalId(rental.getId());
         createInvoiceRequest.setCreateDate(LocalDate.now());
 
@@ -202,7 +209,6 @@ public class PaymentManager implements CityService.PaymentService {
 
     public void newPayment(CreatePaymentRequest createPaymentRequest, Payment payment, Customer customer, Rental rental,Invoice invoice){
         payment.setDayCount(diffDates(createPaymentRequest));
-        payment.setTotalPrice(500);
         payment.setCustomer(customer);
         payment.setRentCity(this.getCity(createPaymentRequest));
         payment.setTotalPrice(addTotalPrice(createPaymentRequest));
@@ -210,6 +216,5 @@ public class PaymentManager implements CityService.PaymentService {
         payment.setRental(rental);
         payment.setInvoice(invoice);
         this.paymentDao.save(payment);
-
     }
 }

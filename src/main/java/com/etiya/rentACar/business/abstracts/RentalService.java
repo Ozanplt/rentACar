@@ -19,4 +19,6 @@ public interface RentalService {
     Result delete(DeleteRentalRequest deleteRentalRequest);
     DataResult<RentalDto> getById(int id);
     DataResult<RentalDto> getByLastRental();
+
+    double setDiscountedPrice(int carId);///
 }

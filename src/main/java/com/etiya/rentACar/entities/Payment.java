@@ -64,7 +64,7 @@ public class Payment {
     @JoinColumn(name="rentCityId",referencedColumnName = "id")
     private City rentCity;
 
-    @ManyToOne
+    @ManyToOne//OnetoOne olmalı mı?
     @JoinColumn(name="invoice_id")
     private Invoice invoice;
 
